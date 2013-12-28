@@ -2,15 +2,17 @@
   var t = require('./true.js');
 
   function toInt(o) {
-    return parseInt(o.join(""), 10);
+    return parseInt(o, 10);
   }
 }
 
-start
-  = commands:(command:command ws { return command; })*   { return new t.Block(commands); }
+start = block
+
+block = commands:(ws comment? ws command:command ws comment? ws { return command; })*
+  { return new t.Block(commands); }
 
 command
-  = push
+  = pushInt
   / add
   / subtract
   / multiply
@@ -27,68 +29,96 @@ command
   / rotate
   / pick
   / printInt
+  / printChar
+  / printString
+  / readChar
   / varAssign
   / varRead
+  / subroutine
+  / runSubroutine
+  / if
+  / while
 
-ws
-  = [ \n\t]*
+ws = [ \n\t]*
 
-add
-  = '+'                     { return new t.Add(); }
+add = '+'
+  { return new t.Add(); }
 
-subtract
-  = '-'                     { return new t.Subtract(); }
+subtract = '-'
+  { return new t.Subtract(); }
 
-multiply
-  = '*'                     { return new t.Multiply(); }
+multiply = '*'
+  { return new t.Multiply(); }
 
-divide
-  = '/'                     { return new t.Divide(); }
+divide = '/'
+  { return new t.Divide(); }
 
-negate
-  = '_'                     { return new t.Negate(); }
+negate = '_'
+  { return new t.Negate(); }
 
-equal
-  = '='                     { return new t.Equal(); }
+equal = '='
+  { return new t.Equal(); }
 
-greater
-  = '>'                     { return new t.Greater(); }
+greater = '>'
+  { return new t.Greater(); }
 
-and
-  = '&'                     { return new t.And(); }
+and = '&'
+  { return new t.And(); }
 
-or
-  = '|'                     { return new t.Or(); }
+or = '|'
+  { return new t.Or(); }
 
-not
-  = '~'                     { return new t.Not(); }
+not = '~'
+  { return new t.Not(); }
 
-duplicate
-  = '$'                     { return new t.Duplicate(); }
+duplicate = '$'
+  { return new t.Duplicate(); }
 
-delete
-  = '%'                     { return new t.Delete(); }
+delete = '%'
+  { return new t.Delete(); }
 
-swap
-  = '\\'                    { return new t.Swap(); }
+swap = '\\'
+  { return new t.Swap(); }
 
-rotate
-  = '@'                     { return new t.Rotate(); }
+rotate = '@'
+  { return new t.Rotate(); }
 
-pick
-  = 'ø'                     { return new t.Pick(); }
+pick = 'ø'
+  { return new t.Pick(); }
 
-printInt
-  = '.'                          { return new t.PrintInt(); }
+printInt = '.'
+ { return new t.PrintInt(); }
 
-push
-  = digits:('-'?[0-9]+)          { return new t.Push(toInt(digits)); }
+printChar = ','
+  { return new t.PrintChar(); }
 
-varAssign
-  = name:varName ws ':' ws       { return new t.AssignVar(name); }
+printString = '"' quote:([^"]*) '"'
+  { return new t.PrintString(quote.join("")); }
 
-varRead
-  = name:varName ws ';' ws       { return new t.ReadVar(name); }
+readChar = '^'
+  { return new t.ReadChar(); }
 
-varName
-  = [a-z]
+pushInt = '-'?[0-9]+
+  { return new t.Push(toInt(text())); }
+
+varAssign = name:varName ws ':' ws
+  { return new t.AssignVar(name); }
+
+varRead = name:varName ws ';' ws
+  { return new t.ReadVar(name); }
+
+varName = [a-z]
+
+subroutine = '[' block:block ']'
+  { return new t.Subroutine(block); }
+
+runSubroutine = '!'
+  { return new t.RunSubroutine(); }
+
+if = '?'
+  { return new t.If(); }
+
+while = '#'
+  { return new t.While(); }
+
+comment = '{' [^}]* '}'
