@@ -22,17 +22,42 @@ function isFalse(x) {
   return x == falseValue();
 }
 
+function ensureBlock(x) {
+  if (!block(x))
+    throw new exp.TypeError('block', trueType(x));
+}
+
+function ensureInt(x) {
+  if (!number(x))
+    throw new exp.TypeError('int', trueType(x));
+}
+
+function ensureStack(env, requiredSize) {
+  if (env.stack.length < requiredSize)
+    throw new exp.StackError(requiredSize, env.stack.length);
+}
+
+function trueType(x) {
+  if (block(x)) {
+    return 'block';
+  } else if (number(x)) {
+    return 'int';
+  } else {
+    return '<' + typeof x + '>';
+  }
+}
+
 var exp = {
   RuntimeError: function(message) {
     this.message = message;
   },
 
-  StackError: function() {
-    return new exp.RuntimeError('Stack is too shallow.');
+  StackError: function(required, actual) {
+    return new exp.RuntimeError('Not enough operands on stack (required: ' + required + ', actual: ' + actual + ').');
   },
 
-  TypeError: function() {
-    return new exp.RuntimeError('Unexpected type.');
+  TypeError: function(expected, actual) {
+    return new exp.RuntimeError('Unexpected type (expected: ' + expected + ', actual: ' + actual + ').');
   },
 
   ReferenceError: function(name) {
@@ -48,8 +73,7 @@ var exp = {
 
   BinaryOp: function(op) {
     this.exec = function(env) {
-      if (env.stack.length < 2)
-        throw new exp.StackError();
+      ensureStack(env, 2);
 
       var r = env.stack.pop();
       var l = env.stack.pop();
@@ -59,8 +83,7 @@ var exp = {
 
   UnaryOp: function(op) {
     this.exec = function(env) {
-      if (env.stack.length < 1)
-        throw new exp.StackError();
+      ensureStack(env, 1);
 
       var s = env.stack.pop();
       env.stack.push(op(s)); 
@@ -83,8 +106,8 @@ var exp = {
 
   Add: function() {
     return new exp.BinaryOp(function(x, y) {
-      if (!number(x) || !number(y))
-        throw new exp.TypeError();
+      ensureInt(x);
+      ensureInt(y);
 
       return x + y;
     });
@@ -92,8 +115,8 @@ var exp = {
 
   Subtract: function() {
     return new exp.BinaryOp(function(x, y) {
-      if (!number(x) || !number(y))
-        throw new exp.TypeError();
+      ensureInt(x);
+      ensureInt(y);
 
       return x - y;
     });
@@ -101,8 +124,8 @@ var exp = {
 
   Multiply: function() {
     return new exp.BinaryOp(function(x, y) {
-      if (!number(x) || !number(y))
-        throw new exp.TypeError();
+      ensureInt(x);
+      ensureInt(y);
 
       return x * y;
     });
@@ -110,8 +133,8 @@ var exp = {
 
   Quotient: function() {
     return new exp.BinaryOp(function(x, y) {
-      if (!number(x) || !number(y))
-        throw new exp.TypeError();
+      ensureInt(x);
+      ensureInt(y);
 
       return Math.floor(x / y);
     });
@@ -119,8 +142,7 @@ var exp = {
 
   Negate: function() {
     return new exp.UnaryOp(function(x) {
-      if (!number(x))
-        throw new exp.TypeError();
+      ensureInt(x);
 
       return -x;
     });
@@ -128,8 +150,8 @@ var exp = {
 
   Equal: function() {
     return new exp.BinaryOp(function(x, y) {
-      if (!number(x) || !number(y))
-        throw new exp.TypeError();
+      ensureInt(x);
+      ensureInt(y);
 
       return (x == y) ? trueValue() : falseValue();
     });
@@ -137,8 +159,8 @@ var exp = {
 
   Greater: function() {
     return new exp.BinaryOp(function(x, y) {
-      if (!number(x) || !number(y))
-        throw new exp.TypeError();
+      ensureInt(x);
+      ensureInt(y);
 
       return (x > y) ? trueValue() : falseValue();
     });
@@ -146,8 +168,8 @@ var exp = {
 
   And: function() {
     return new exp.BinaryOp(function(x, y) {
-      if (!number(x) || !number(y))
-        throw new exp.TypeError();
+      ensureInt(x);
+      ensureInt(y);
 
       return (isTrue(x) && isTrue(y)) ? trueValue() : falseValue();
     });
@@ -155,8 +177,8 @@ var exp = {
 
   Or: function() {
     return new exp.BinaryOp(function(x, y) {
-      if (!number(x) || !number(y))
-        throw new exp.TypeError();
+      ensureInt(x);
+      ensureInt(y);
 
       return (isTrue(x) || isTrue(y)) ? trueValue() : falseValue();
     });
@@ -164,8 +186,7 @@ var exp = {
 
   Not: function() {
     return new exp.UnaryOp(function(x) {
-      if (!number(x))
-        throw new exp.TypeError();
+      ensureInt(x);
 
       return isTrue(x) ? falseValue() : trueValue();
     });
@@ -173,8 +194,7 @@ var exp = {
 
   Duplicate: function() {
     this.exec = function(env) {
-      if (env.stack.length < 1)
-        throw new exp.StackError();
+      ensureStack(env, 1);
 
       var x = env.stack[env.stack.length - 1];
       env.stack.push(x);
@@ -183,8 +203,7 @@ var exp = {
 
   Delete: function() {
     this.exec = function(env) {
-      if (env.stack.length < 1)
-        throw new exp.StackError();
+      ensureStack(env, 1);
 
       env.stack.pop();
     };
@@ -192,8 +211,7 @@ var exp = {
 
   Swap: function() {
     this.exec = function(env) {
-      if (env.stack.length < 2)
-        throw new exp.StackError();
+      ensureStack(env, 2);
 
       var first = env.stack.pop();
       var second = env.stack.pop();
@@ -204,8 +222,7 @@ var exp = {
 
   Rotate: function() {
     this.exec = function(env) {
-      if (env.stack.length < 3)
-        throw new exp.StackError();
+      ensureStack(env, 3);
 
       var item = env.stack[env.stack.length - 3];
       env.stack.splice(env.stack.length - 3, 1);
@@ -223,18 +240,15 @@ var exp = {
 
   Pick: function() {
     this.exec = function(env) {
-      if (env.stack.length < 1)
-        throw new exp.StackError();
+      ensureStack(env, 1);
 
       var index = env.stack.pop();
-      if (!number(index))
-        throw new exp.TypeError();
+      ensureInt(index);
 
       if (index < 0)
         throw new exp.RuntimeError('ø must specify non-negative index (' + index + ' given).');
 
-      if (env.stack.length < (index + 1))
-        throw new exp.StackError();
+      ensureStack(env, index + 1);
 
       var item = env.stack[env.stack.length - 1 - index];
       env.stack.push(item);
@@ -243,8 +257,7 @@ var exp = {
 
   PrintInt: function() {
     this.exec = function(env) {
-      if (env.stack.length < 1)
-        throw new exp.StackError();
+      ensureStack(env, 1);
 
       var x = env.stack.pop();
       env.print(String(x));
@@ -253,8 +266,7 @@ var exp = {
 
   PrintChar: function() {
     this.exec = function(env) {
-      if (env.stack.length < 1)
-        throw new exp.StackError();
+      ensureStack(env, 1);
 
       var code = env.stack.pop();
       env.print(String.fromCharCode(code));
@@ -276,8 +288,7 @@ var exp = {
 
   AssignVar: function(name) {
     this.exec = function(env) {
-      if (env.stack.length < 1)
-        throw new exp.StackError();
+      ensureStack(env, 1);
 
       var x = env.stack.pop();
       env.vars[name] = x;
@@ -302,13 +313,10 @@ var exp = {
 
   RunSubroutine: function() {
     this.exec = function(env) {
-      if (env.stack.length < 1)
-        throw new exp.StackError();
+      ensureStack(env, 1);
 
       var sub = env.stack.pop();
-
-      if (!block(sub))
-        throw new exp.TypeError();
+      ensureBlock(sub);
 
       sub.exec(env);
     };
@@ -316,16 +324,13 @@ var exp = {
 
   If: function() {
     this.exec = function(env) {
-      if (env.stack.length < 2)
-        throw new exp.StackError();
+      ensureStack(env, 2);
 
       var sub = env.stack.pop();
-      if (!block(sub))
-        throw new exp.TypeError();
+      ensureBlock(sub);
 
       var condition = env.stack.pop();
-      if (!number(condition))
-        throw new exp.TypeError();
+      ensureInt(condition);
 
       if (isTrue(condition))
         sub.exec(env);
@@ -334,26 +339,21 @@ var exp = {
 
   While: function() {
     this.exec = function(env) {
-      if (env.stack.length < 2)
-        throw new exp.StackError();
+      ensureStack(env, 2);
 
       var body = env.stack.pop();
-      if (!block(body))
-        throw new exp.TypeError();
+      ensureBlock(body);
 
       var condition = env.stack.pop();
-      if (!block(condition))
-        throw new exp.TypeError();
+      ensureBlock(condition);
 
       while (true) {
         condition.exec(env);
 
-        if (env.stack.length < 1)
-          throw new exp.StackError();
+        ensureStack(env, 1);
 
         var result = env.stack.pop();
-        if (!number(result))
-          throw new exp.TypeError();
+        ensureInt(result);
 
         if (isTrue(result))
           body.exec(env);
@@ -365,11 +365,13 @@ var exp = {
 
   Random: function() {
     this.exec = function(env) {
-      if (env.stack.length < 2)
-        throw new exp.StackError();
+      ensureStack(env, 2);
 
       var hi = env.stack.pop();
+      ensureInt(hi);
+
       var lo = env.stack.pop();
+      ensureInt(lo);
 
       var rand = Math.floor((Math.random() * (hi - lo + 1)) + lo);
       env.stack.push(rand);
