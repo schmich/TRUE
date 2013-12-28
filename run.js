@@ -18,7 +18,11 @@ fs.readFile('test.t', 'utf8', function(err, data) {
   };
 
   var program = parser.parse(data);
-  program.exec(env);
+  try {
+    program.exec(env);
+  } catch (e) {
+    console.log('Error executing script: ' + e.message); 
+  }
 
   console.log();
   console.log('--- DEBUG ---');

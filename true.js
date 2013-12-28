@@ -1,4 +1,24 @@
+function number(x) {
+  return typeof x == 'number';
+}
+
 exp = {
+  RuntimeError: function(message) {
+    this.message = message;
+  },
+
+  StackError: function() {
+    return new exp.RuntimeError('Stack is too shallow.');
+  },
+
+  TypeError: function() {
+    return new exp.RuntimeError('Unexpected type.');
+  },
+
+  ReferenceError: function(name) {
+    return new exp.RuntimeError('Referenced variable is not defined (name: ' + name + ').');
+  },
+
   Env: function() {
     this.stack = [];
     this.vars = { };
@@ -8,7 +28,9 @@ exp = {
 
   BinaryOp: function(op) {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 2)
+        throw new exp.StackError();
+
       var r = env.stack.pop();
       var l = env.stack.pop();
       env.stack.push(op(l, r));
@@ -17,7 +39,9 @@ exp = {
 
   UnaryOp: function(op) {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 1)
+        throw new exp.StackError();
+
       var s = env.stack.pop();
       env.stack.push(op(s)); 
     };
@@ -39,82 +63,119 @@ exp = {
 
   Add: function() {
     return new exp.BinaryOp(function(x, y) {
+      if (!number(x) || !number(y))
+        throw new exp.TypeError();
+
       return x + y;
     });
   },
 
   Subtract: function() {
     return new exp.BinaryOp(function(x, y) {
+      if (!number(x) || !number(y))
+        throw new exp.TypeError();
+
       return x - y;
     });
   },
 
   Multiply: function() {
     return new exp.BinaryOp(function(x, y) {
+      if (!number(x) || !number(y))
+        throw new exp.TypeError();
+
       return x * y;
     });
   },
 
   Divide: function() {
     return new exp.BinaryOp(function(x, y) {
+      if (!number(x) || !number(y))
+        throw new exp.TypeError();
+
       // Returns the quotient.
       return Math.floor(x / y);
     });
   },
 
   Negate: function() {
-    return new exp.UnaryOp(function(s) {
-      return -s;
+    return new exp.UnaryOp(function(x) {
+      if (!number(x))
+        throw new exp.TypeError();
+
+      return -x;
     });
   },
 
   Equal: function() {
     return new exp.BinaryOp(function(x, y) {
+      if (!number(x) || !number(y))
+        throw new exp.TypeError();
+
       return (x == y) ? 1 : 0;
     });
   },
 
   Greater: function() {
     return new exp.BinaryOp(function(x, y) {
+      if (!number(x) || !number(y))
+        throw new exp.TypeError();
+
       return (x > y) ? 1 : 0;
     });
   },
 
   And: function() {
     return new exp.BinaryOp(function(x, y) {
+      if (!number(x) || !number(y))
+        throw new exp.TypeError();
+
       return ((x != 0) && (y != 0)) ? 1 : 0;
     });
   },
 
   Or: function() {
     return new exp.BinaryOp(function(x, y) {
+      if (!number(x) || !number(y))
+        throw new exp.TypeError();
+
       return ((x != 0) || (y != 0)) ? 1 : 0;
     });
   },
 
   Not: function() {
     return new exp.UnaryOp(function(x) {
+      if (!number(x))
+        throw new exp.TypeError();
+
       return (x == 0) ? 1 : 0;
     });
   },
 
   Duplicate: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
-      env.stack.push(env.stack[env.stack.length - 1]);
+      if (env.stack.length < 1)
+        throw new exp.StackError();
+
+      var x = env.stack[env.stack.length - 1];
+      env.stack.push(x);
     };
   },
 
   Delete: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 1)
+        throw new exp.StackError();
+
       env.stack.pop();
     };
   },
 
   Swap: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 2)
+        throw new exp.StackError();
+
       var first = env.stack.pop();
       var second = env.stack.pop();
       env.stack.push(first);
@@ -124,7 +185,9 @@ exp = {
 
   Rotate: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 3)
+        throw new exp.StackError();
+
       var item = env.stack[env.stack.length - 3];
       env.stack.splice(env.stack.length - 3, 1);
       env.stack.push(item);
@@ -141,10 +204,19 @@ exp = {
 
   Pick: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 1)
+        throw new exp.StackError();
+
       var index = env.stack.pop();
-      // TODO: Ensure index >= 0.
-      // TODO: Check stack.
+      if (!number(index))
+        throw new exp.TypeError();
+
+      if (index < 0)
+        throw new exp.RuntimeError('Pick operation must specify non-negative index.');
+
+      if (env.stack.length < (index + 1))
+        throw new exp.StackError();
+
       var item = env.stack[env.stack.length - 1 - index];
       env.stack.push(item);
     };
@@ -152,8 +224,9 @@ exp = {
 
   PrintInt: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
-      // TODO: Inject print function.
+      if (env.stack.length < 1)
+        throw new exp.StackError();
+
       var x = env.stack[env.stack.length - 1];
       env.print(String(x));
     };
@@ -161,8 +234,9 @@ exp = {
 
   PrintChar: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
-      // TODO: Inject print function.
+      if (env.stack.length < 1)
+        throw new exp.StackError();
+
       var code = env.stack[env.stack.length - 1];
       env.print(String.fromCharCode(code));
     };
@@ -183,7 +257,9 @@ exp = {
 
   AssignVar: function(name) {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 1)
+        throw new exp.StackError();
+
       var x = env.stack.pop();
       env.vars[name] = x;
     };
@@ -191,8 +267,10 @@ exp = {
 
   ReadVar: function(name) {
     this.exec = function(env) {
-      // TODO: Check for var.
       var x = env.vars[name];
+      if (x === undefined)
+        throw new exp.ReferenceError(name);
+
       env.stack.push(x); 
     };
   },
@@ -205,20 +283,31 @@ exp = {
 
   RunSubroutine: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 1)
+        throw new exp.StackError();
+
       var sub = env.stack.pop();
-      // TODO: Check type.
+
+      if (!(sub instanceof exp.Block))
+        throw new exp.TypeError();
+
       sub.exec(env);
     };
   },
 
   If: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 2)
+        throw new exp.StackError();
+
       var sub = env.stack.pop();
-      // TODO: Check stack.
+      if (!(sub instanceof exp.Block))
+        throw new exp.TypeError();
+
       var condition = env.stack.pop();
-      // TODO: Check type.
+      if (!number(condition))
+        throw new exp.TypeError();
+
       if (condition != 0)
         sub.exec(env);
     };
@@ -226,12 +315,17 @@ exp = {
 
   While: function() {
     this.exec = function(env) {
-      // TODO: Check stack.
+      if (env.stack.length < 2)
+        throw new exp.StackError();
+
       var body = env.stack.pop();
-      // TODO: Check stack.
+      if (!(body instanceof exp.Block))
+        throw new exp.TypeError();
+
       var condition = env.stack.pop();
-      // TODO: Check types.
-      // TODO: Check stack.
+      if (!(condition instanceof exp.Block))
+        throw new exp.TypeError();
+
       while (condition.exec(env), env.stack[env.stack.length - 1] != 0) {
         body.exec(env);
       }
