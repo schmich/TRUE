@@ -349,7 +349,6 @@ var exp = {
 
       while (true) {
         condition.exec(env);
-
         ensureStack(env, 1);
 
         var result = env.stack.pop();
