@@ -22,7 +22,7 @@ function isFalse(x) {
   return x == falseValue();
 }
 
-exp = {
+var exp = {
   RuntimeError: function(message) {
     this.message = message;
   },

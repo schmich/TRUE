@@ -1,12 +1,24 @@
-#script, #input, #output, #error, #stack, #vars {
+#script, #input, #output, #error, #stack, #vars, #run, #step {
+  color: #333;
   font: 28px Monaco;
 }
+#run, #step {
+  color: #fff;
+  background: #59f;
+  padding: 3px 20px;
+  margin: 0;
+  border: 1px solid #59f;
+}
 #script {
-  height: 600px;
+  height: 400px;
   width: 1000px;
   display: block;
 }
 #input {
+  padding: 3px 3px;
+  margin: 0;
+  border: 1px solid #999;
+  margin-right: 5px;
 }
 #output {
   white-space: pre;
@@ -16,4 +28,10 @@
 }
 #stack ul, #vars ul {
   list-style-type: none;
+}
+.control {
+  margin-top: 10px;
+}
+.content {
+  padding: 10px;
 }
