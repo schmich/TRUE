@@ -1,0 +1,19 @@
+#script, #input, #output, #error, #stack, #vars {
+  font: 28px Monaco;
+}
+#script {
+  height: 600px;
+  width: 1000px;
+  display: block;
+}
+#input {
+}
+#output {
+  white-space: pre;
+}
+#error {
+  background: #faa;
+}
+#stack ul, #vars ul {
+  list-style-type: none;
+}

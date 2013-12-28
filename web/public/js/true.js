@@ -15,7 +15,7 @@ function falseValue() {
 }
 
 function isTrue(x) {
-  return x == trueValue();
+  return x != falseValue();
 }
 
 function isFalse(x) {
@@ -43,7 +43,7 @@ exp = {
     this.stack = [];
     this.vars = { };
     this.print = function() { };
-    this.readChar = function() { return 0; };
+    this.readChar = function() { return -1; };
   },
 
   BinaryOp: function(op) {
@@ -231,7 +231,7 @@ exp = {
         throw new exp.TypeError();
 
       if (index < 0)
-        throw new exp.RuntimeError('Pick operation must specify non-negative index.');
+        throw new exp.RuntimeError('Pick operation must specify non-negative index (' + index + ' given).');
 
       if (env.stack.length < (index + 1))
         throw new exp.StackError();
@@ -246,7 +246,7 @@ exp = {
       if (env.stack.length < 1)
         throw new exp.StackError();
 
-      var x = env.stack[env.stack.length - 1];
+      var x = env.stack.pop();
       env.print(String(x));
     };
   },
@@ -256,7 +256,7 @@ exp = {
       if (env.stack.length < 1)
         throw new exp.StackError();
 
-      var code = env.stack[env.stack.length - 1];
+      var code = env.stack.pop();
       env.print(String.fromCharCode(code));
     };
   },
@@ -327,7 +327,7 @@ exp = {
       if (!number(condition))
         throw new exp.TypeError();
 
-      if (condition != 0)
+      if (isTrue(condition))
         sub.exec(env);
     };
   },
@@ -351,14 +351,38 @@ exp = {
         if (env.stack.length < 1)
           throw new exp.StackError();
 
-        var result = env.stack[env.stack.length - 1];
+        var result = env.stack.pop();
+        if (!number(result))
+          throw new exp.TypeError();
+
         if (isTrue(result))
           body.exec(env);
         else
           break;
       }
     };
+  },
+
+  Random: function() {
+    this.exec = function(env) {
+      if (env.stack.length < 2)
+        throw new exp.StackError();
+
+      var hi = env.stack.pop();
+      var lo = env.stack.pop();
+
+      var rand = Math.floor((Math.random() * (hi - lo + 1)) + lo);
+      env.stack.push(rand);
+    };
+  },
+
+  Flush: function() {
+    this.exec = function(env) { };
+  },
+
+  Assembly: function() {
+    this.exec = function(env) { };
   }
 };
 
-module.exports = exp;
+$t = exp;
