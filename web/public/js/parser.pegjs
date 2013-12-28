@@ -1,4 +1,13 @@
 {
+  function annotate(obj) {
+    obj.source = {
+      line: line(),
+      column: column(),
+      text: text()
+    };
+    return obj;
+  }
+
   function toInt(o) {
     return parseInt(o, 10);
   }
@@ -44,96 +53,96 @@ command
 ws = [ \r\n\t]*
 
 add = '+'
-  { return new $t.Add(); }
+  { return annotate(new $t.Add()); }
 
 subtract = '-'
-  { return new $t.Subtract(); }
+  { return annotate(new $t.Subtract()); }
 
 multiply = '*'
-  { return new $t.Multiply(); }
+  { return annotate(new $t.Multiply()); }
 
 quotient = '/'
-  { return new $t.Quotient(); }
+  { return annotate(new $t.Quotient()); }
 
 negate = '_'
-  { return new $t.Negate(); }
+  { return annotate(new $t.Negate()); }
 
 equal = '='
-  { return new $t.Equal(); }
+  { return annotate(new $t.Equal()); }
 
 greater = '>'
-  { return new $t.Greater(); }
+  { return annotate(new $t.Greater()); }
 
 and = '&'
-  { return new $t.And(); }
+  { return annotate(new $t.And()); }
 
 or = '|'
-  { return new $t.Or(); }
+  { return annotate(new $t.Or()); }
 
 not = '~'
-  { return new $t.Not(); }
+  { return annotate(new $t.Not()); }
 
 duplicate = '$'
-  { return new $t.Duplicate(); }
+  { return annotate(new $t.Duplicate()); }
 
 delete = '%'
-  { return new $t.Delete(); }
+  { return annotate(new $t.Delete()); }
 
 swap = '\\'
-  { return new $t.Swap(); }
+  { return annotate(new $t.Swap()); }
 
 rotate = '@'
-  { return new $t.Rotate(); }
+  { return annotate(new $t.Rotate()); }
 
 pick = 'ø'
-  { return new $t.Pick(); }
+  { return annotate(new $t.Pick()); }
 
 printInt = '.'
- { return new $t.PrintInt(); }
+ { return annotate(new $t.PrintInt()); }
 
 printChar = ','
-  { return new $t.PrintChar(); }
+  { return annotate(new $t.PrintChar()); }
 
 printString = '"' quote:([^"]*) '"'
-  { return new $t.PrintString(quote.join("")); }
+  { return annotate(new $t.PrintString(quote.join(""))); }
 
 readChar = '^'
-  { return new $t.ReadChar(); }
+  { return annotate(new $t.ReadChar()); }
 
 pushInt = [0-9]+
-  { return new $t.PushInt(toInt(text())); }
+  { return annotate(new $t.PushInt(toInt(text()))); }
 
 pushChar = "'" char:.
-  { return new $t.PushChar(char); }
+  { return annotate(new $t.PushChar(char)); }
 
 varAssign = name:varName ws ':' ws
-  { return new $t.AssignVar(name); }
+  { return annotate(new $t.AssignVar(name)); }
 
 varRead = name:varName ws ';' ws
-  { return new $t.ReadVar(name); }
+  { return annotate(new $t.ReadVar(name)); }
 
 varName = [A-Za-z]+
   { return text(); }
 
 pushSubroutine = '[' block:block ']'
-  { return new $t.PushSubroutine(block); }
+  { return annotate(new $t.PushSubroutine(block)); }
 
 runSubroutine = '!'
-  { return new $t.RunSubroutine(); }
+  { return annotate(new $t.RunSubroutine()); }
 
 if = '?'
-  { return new $t.If(); }
+  { return annotate(new $t.If()); }
 
 while = '#'
-  { return new $t.While(); }
+  { return annotate(new $t.While()); }
 
 random = '\u2206'
-  { return new $t.Random(); }
+  { return annotate(new $t.Random()); }
 
 flush = 'ß'
-  { return new $t.Flush(); }
+  { return annotate(new $t.Flush()); }
 
 assembly = [0-9]+ '`'
-  { return new $t.Assembly(); }
+  { return annotate(new $t.Assembly()); }
 
 comment = '{' [^}]* '}'

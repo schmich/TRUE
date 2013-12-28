@@ -231,7 +231,7 @@ exp = {
         throw new exp.TypeError();
 
       if (index < 0)
-        throw new exp.RuntimeError('Pick operation must specify non-negative index (' + index + ' given).');
+        throw new exp.RuntimeError('ø must specify non-negative index (' + index + ' given).');
 
       if (env.stack.length < (index + 1))
         throw new exp.StackError();
