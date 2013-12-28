@@ -6,6 +6,22 @@ function block(x) {
   return x instanceof exp.Block;
 }
 
+function trueValue() {
+  return -1;
+}
+
+function falseValue() {
+  return 0;
+}
+
+function isTrue(x) {
+  return x == trueValue();
+}
+
+function isFalse(x) {
+  return x == falseValue();
+}
+
 exp = {
   RuntimeError: function(message) {
     this.message = message;
@@ -92,12 +108,11 @@ exp = {
     });
   },
 
-  Divide: function() {
+  Quotient: function() {
     return new exp.BinaryOp(function(x, y) {
       if (!number(x) || !number(y))
         throw new exp.TypeError();
 
-      // Returns the quotient.
       return Math.floor(x / y);
     });
   },
@@ -116,7 +131,7 @@ exp = {
       if (!number(x) || !number(y))
         throw new exp.TypeError();
 
-      return (x == y) ? 1 : 0;
+      return (x == y) ? trueValue() : falseValue();
     });
   },
 
@@ -125,7 +140,7 @@ exp = {
       if (!number(x) || !number(y))
         throw new exp.TypeError();
 
-      return (x > y) ? 1 : 0;
+      return (x > y) ? trueValue() : falseValue();
     });
   },
 
@@ -134,7 +149,7 @@ exp = {
       if (!number(x) || !number(y))
         throw new exp.TypeError();
 
-      return ((x != 0) && (y != 0)) ? 1 : 0;
+      return (isTrue(x) && isTrue(y)) ? trueValue() : falseValue();
     });
   },
 
@@ -143,7 +158,7 @@ exp = {
       if (!number(x) || !number(y))
         throw new exp.TypeError();
 
-      return ((x != 0) || (y != 0)) ? 1 : 0;
+      return (isTrue(x) || isTrue(y)) ? trueValue() : falseValue();
     });
   },
 
@@ -152,7 +167,7 @@ exp = {
       if (!number(x))
         throw new exp.TypeError();
 
-      return (x == 0) ? 1 : 0;
+      return isTrue(x) ? falseValue() : trueValue();
     });
   },
 
@@ -330,8 +345,17 @@ exp = {
       if (!block(condition))
         throw new exp.TypeError();
 
-      while (condition.exec(env), env.stack[env.stack.length - 1] != 0) {
-        body.exec(env);
+      while (true) {
+        condition.exec(env);
+
+        if (env.stack.length < 1)
+          throw new exp.StackError();
+
+        var result = env.stack[env.stack.length - 1];
+        if (isTrue(result))
+          body.exec(env);
+        else
+          break;
       }
     };
   }

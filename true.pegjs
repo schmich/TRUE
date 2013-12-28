@@ -17,7 +17,7 @@ command
   / add
   / subtract
   / multiply
-  / divide
+  / quotient
   / negate
   / equal
   / greater
@@ -40,7 +40,7 @@ command
   / if
   / while
 
-ws = [ \n\t]*
+ws = [ \r\n\t]*
 
 add = '+'
   { return new t.Add(); }
@@ -51,8 +51,8 @@ subtract = '-'
 multiply = '*'
   { return new t.Multiply(); }
 
-divide = '/'
-  { return new t.Divide(); }
+quotient = '/'
+  { return new t.Quotient(); }
 
 negate = '_'
   { return new t.Negate(); }
@@ -111,7 +111,8 @@ varAssign = name:varName ws ':' ws
 varRead = name:varName ws ';' ws
   { return new t.ReadVar(name); }
 
-varName = [a-z]
+varName = [A-Za-z]+
+  { return text(); }
 
 pushSubroutine = '[' block:block ']'
   { return new t.PushSubroutine(block); }
