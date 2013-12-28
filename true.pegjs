@@ -13,6 +13,7 @@ block = commands:(ws comment? ws command:command ws comment? ws { return command
 
 command
   = pushInt
+  / pushChar
   / add
   / subtract
   / multiply
@@ -99,7 +100,10 @@ readChar = '^'
   { return new t.ReadChar(); }
 
 pushInt = '-'?[0-9]+
-  { return new t.Push(toInt(text())); }
+  { return new t.PushInt(toInt(text())); }
+
+pushChar = "'" char:.
+  { return new t.PushChar(char); }
 
 varAssign = name:varName ws ':' ws
   { return new t.AssignVar(name); }

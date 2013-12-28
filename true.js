@@ -1,7 +1,9 @@
 exp = {
-  Env: function(stack, vars) {
-    this.stack = stack;
-    this.vars = vars;
+  Env: function() {
+    this.stack = [];
+    this.vars = { };
+    this.print = function() { };
+    this.readChar = function() { return 0; };
   },
 
   BinaryOp: function(op) {
@@ -21,10 +23,18 @@ exp = {
     };
   },
 
-  Push: function(value) {
+  PushLiteral: function(value) {
     this.exec = function(env) {
       env.stack.push(value);
     }
+  },
+
+  PushInt: function(value) {
+    return new exp.PushLiteral(value);
+  },
+
+  PushChar: function(value) {
+    return new exp.PushLiteral(value.charCodeAt(0));
   },
 
   Add: function() {
@@ -47,7 +57,8 @@ exp = {
 
   Divide: function() {
     return new exp.BinaryOp(function(x, y) {
-      return x / y;
+      // Returns the quotient.
+      return Math.floor(x / y);
     });
   },
 
@@ -144,7 +155,7 @@ exp = {
       // TODO: Check stack.
       // TODO: Inject print function.
       var x = env.stack[env.stack.length - 1];
-      process.stdout.write(String(x));
+      env.print(String(x));
     };
   },
 
@@ -153,20 +164,20 @@ exp = {
       // TODO: Check stack.
       // TODO: Inject print function.
       var code = env.stack[env.stack.length - 1];
-      process.stdout.write(String.fromCharCode(code));
+      env.print(String.fromCharCode(code));
     };
   },
 
   // TODO: Support escaped quotes.
   PrintString: function(string) {
     this.exec = function(env) {
-      process.stdout.write(string);
+      env.print(string);
     };
   },
 
   ReadChar: function() {
     this.exec = function(env) {
-      // TODO: Implement.
+      env.stack.push(env.readChar());
     };
   },
 
