@@ -117,7 +117,7 @@ module.exports = (function() {
         peg$c82 = { type: "literal", value: "[", description: "\"[\"" },
         peg$c83 = "]",
         peg$c84 = { type: "literal", value: "]", description: "\"]\"" },
-        peg$c85 = function(block) { return new t.Subroutine(block); },
+        peg$c85 = function(block) { return new t.PushSubroutine(block); },
         peg$c86 = "!",
         peg$c87 = { type: "literal", value: "!", description: "\"!\"" },
         peg$c88 = function() { return new t.RunSubroutine(); },
@@ -478,7 +478,7 @@ module.exports = (function() {
                                                 if (s0 === peg$FAILED) {
                                                   s0 = peg$parsevarRead();
                                                   if (s0 === peg$FAILED) {
-                                                    s0 = peg$parsesubroutine();
+                                                    s0 = peg$parsepushSubroutine();
                                                     if (s0 === peg$FAILED) {
                                                       s0 = peg$parserunSubroutine();
                                                       if (s0 === peg$FAILED) {
@@ -1142,7 +1142,7 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parsesubroutine() {
+    function peg$parsepushSubroutine() {
       var s0, s1, s2, s3;
 
       s0 = peg$currPos;

@@ -2,6 +2,10 @@ function number(x) {
   return typeof x == 'number';
 }
 
+function block(x) {
+  return x instanceof exp.Block;
+}
+
 exp = {
   RuntimeError: function(message) {
     this.message = message;
@@ -275,7 +279,7 @@ exp = {
     };
   },
 
-  Subroutine: function(block) {
+  PushSubroutine: function(block) {
     this.exec = function(env) {
       env.stack.push(block);
     };
@@ -288,7 +292,7 @@ exp = {
 
       var sub = env.stack.pop();
 
-      if (!(sub instanceof exp.Block))
+      if (!block(sub))
         throw new exp.TypeError();
 
       sub.exec(env);
@@ -301,7 +305,7 @@ exp = {
         throw new exp.StackError();
 
       var sub = env.stack.pop();
-      if (!(sub instanceof exp.Block))
+      if (!block(sub))
         throw new exp.TypeError();
 
       var condition = env.stack.pop();
@@ -319,11 +323,11 @@ exp = {
         throw new exp.StackError();
 
       var body = env.stack.pop();
-      if (!(body instanceof exp.Block))
+      if (!block(body))
         throw new exp.TypeError();
 
       var condition = env.stack.pop();
-      if (!(condition instanceof exp.Block))
+      if (!block(condition))
         throw new exp.TypeError();
 
       while (condition.exec(env), env.stack[env.stack.length - 1] != 0) {

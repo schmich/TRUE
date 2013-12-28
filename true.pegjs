@@ -35,7 +35,7 @@ command
   / readChar
   / varAssign
   / varRead
-  / subroutine
+  / pushSubroutine
   / runSubroutine
   / if
   / while
@@ -113,8 +113,8 @@ varRead = name:varName ws ';' ws
 
 varName = [a-z]
 
-subroutine = '[' block:block ']'
-  { return new t.Subroutine(block); }
+pushSubroutine = '[' block:block ']'
+  { return new t.PushSubroutine(block); }
 
 runSubroutine = '!'
   { return new t.RunSubroutine(); }
