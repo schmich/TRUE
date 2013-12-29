@@ -85,18 +85,18 @@ $parser = (function() {
         peg$c50 = function() { return annotate(new $t.Pick()); },
         peg$c51 = ".",
         peg$c52 = { type: "literal", value: ".", description: "\".\"" },
-        peg$c53 = function() { return annotate(new $t.PrintInt()); },
+        peg$c53 = function() { return annotate(new $t.PutInt()); },
         peg$c54 = ",",
         peg$c55 = { type: "literal", value: ",", description: "\",\"" },
-        peg$c56 = function() { return annotate(new $t.PrintChar()); },
+        peg$c56 = function() { return annotate(new $t.PutChar()); },
         peg$c57 = "\"",
         peg$c58 = { type: "literal", value: "\"", description: "\"\\\"\"" },
         peg$c59 = /^[^"]/,
         peg$c60 = { type: "class", value: "[^\"]", description: "[^\"]" },
-        peg$c61 = function(quote) { return annotate(new $t.PrintString(quote.join(""))); },
+        peg$c61 = function(quote) { return annotate(new $t.PutString(quote.join(""))); },
         peg$c62 = "^",
         peg$c63 = { type: "literal", value: "^", description: "\"^\"" },
-        peg$c64 = function() { return annotate(new $t.ReadChar()); },
+        peg$c64 = function() { return annotate(new $t.GetChar()); },
         peg$c65 = /^[0-9]/,
         peg$c66 = { type: "class", value: "[0-9]", description: "[0-9]" },
         peg$c67 = function() { return annotate(new $t.PushInt(toInt(text()))); },
@@ -595,13 +595,13 @@ $parser = (function() {
                                     if (s0 === peg$FAILED) {
                                       s0 = peg$parsepick();
                                       if (s0 === peg$FAILED) {
-                                        s0 = peg$parseprintInt();
+                                        s0 = peg$parseputInt();
                                         if (s0 === peg$FAILED) {
-                                          s0 = peg$parseprintChar();
+                                          s0 = peg$parseputChar();
                                           if (s0 === peg$FAILED) {
-                                            s0 = peg$parseprintString();
+                                            s0 = peg$parseputString();
                                             if (s0 === peg$FAILED) {
-                                              s0 = peg$parsereadChar();
+                                              s0 = peg$parsegetChar();
                                               if (s0 === peg$FAILED) {
                                                 s0 = peg$parsevarAssign();
                                                 if (s0 === peg$FAILED) {
@@ -978,7 +978,7 @@ $parser = (function() {
       return s0;
     }
 
-    function peg$parseprintInt() {
+    function peg$parseputInt() {
       var s0, s1;
 
       s0 = peg$currPos;
@@ -998,7 +998,7 @@ $parser = (function() {
       return s0;
     }
 
-    function peg$parseprintChar() {
+    function peg$parseputChar() {
       var s0, s1;
 
       s0 = peg$currPos;
@@ -1018,7 +1018,7 @@ $parser = (function() {
       return s0;
     }
 
-    function peg$parseprintString() {
+    function peg$parseputString() {
       var s0, s1, s2, s3;
 
       s0 = peg$currPos;
@@ -1076,7 +1076,7 @@ $parser = (function() {
       return s0;
     }
 
-    function peg$parsereadChar() {
+    function peg$parsegetChar() {
       var s0, s1;
 
       s0 = peg$currPos;

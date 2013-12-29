@@ -52,8 +52,8 @@ var exp = {
     var self = this;
     this.stack = [];
     this.vars = { };
-    this.print = function() { };
-    this.readChar = function() { return -1; };
+    this.put = function() { };
+    this.get = function() { return -1; };
     this.stack.popInt = function() {
       ensureStack(self, 1);
       var val = this.pop();
@@ -250,30 +250,30 @@ var exp = {
     };
   },
 
-  PrintInt: function() {
+  PutInt: function() {
     this.exec = function(env) {
       var x = env.stack.popInt();
-      env.print(String(x));
+      env.put(String(x));
     };
   },
 
-  PrintChar: function() {
+  PutChar: function() {
     this.exec = function(env) {
       var code = env.stack.popInt();
-      env.print(String.fromCharCode(code));
+      env.put(String.fromCharCode(code));
     };
   },
 
   // TODO: Support escaped quotes.
-  PrintString: function(string) {
+  PutString: function(string) {
     this.exec = function(env) {
-      env.print(string);
+      env.put(string);
     };
   },
 
-  ReadChar: function() {
+  GetChar: function() {
     this.exec = function(env) {
-      env.stack.push(env.readChar());
+      env.stack.push(env.get());
     };
   },
 

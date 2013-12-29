@@ -36,10 +36,10 @@ command
   / swap
   / rotate
   / pick
-  / printInt
-  / printChar
-  / printString
-  / readChar
+  / putInt
+  / putChar
+  / putString
+  / getChar
   / varAssign
   / varRead
   / pushSubroutine
@@ -97,17 +97,17 @@ rotate = '@'
 pick = 'ø'
   { return annotate(new $t.Pick()); }
 
-printInt = '.'
- { return annotate(new $t.PrintInt()); }
+putInt = '.'
+ { return annotate(new $t.PutInt()); }
 
-printChar = ','
-  { return annotate(new $t.PrintChar()); }
+putChar = ','
+  { return annotate(new $t.PutChar()); }
 
-printString = '"' quote:([^"]*) '"'
-  { return annotate(new $t.PrintString(quote.join(""))); }
+putString = '"' quote:([^"]*) '"'
+  { return annotate(new $t.PutString(quote.join(""))); }
 
-readChar = '^'
-  { return annotate(new $t.ReadChar()); }
+getChar = '^'
+  { return annotate(new $t.GetChar()); }
 
 pushInt = [0-9]+
   { return annotate(new $t.PushInt(toInt(text()))); }

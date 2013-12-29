@@ -16,13 +16,13 @@ function ScriptCtrl($scope) {
     var script = $('#script').val();
 
     var env = new $t.Env();
-    env.print = function(s) {
+    env.put = function(s) {
       $scope.output += s;
     };
 
     var input = $('#input').val();
     var pos = 0;
-    env.readChar = function() {
+    env.get = function() {
       if (pos < input.length) {
         return input.charCodeAt(pos++);
       } else {
