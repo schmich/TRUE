@@ -28,7 +28,7 @@ app.get('/', function(req, res) {
 
   var input = null;
   if (req.query.i)
-    input = req.query.i;
+    input = base64.decode(req.query.i);
 
   res.render('index', { script: script, input: input });
 });
