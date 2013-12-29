@@ -49,10 +49,25 @@ var exp = {
   },
 
   Env: function() {
+    var self = this;
     this.stack = [];
     this.vars = { };
     this.print = function() { };
     this.readChar = function() { return -1; };
+    this.stack.popInt = function() {
+      ensureStack(self, 1);
+      var val = this.pop();
+
+      ensureInt(val);
+      return val;
+    };
+    this.stack.popBlock = function() {
+      ensureStack(self, 1);
+      var val = this.pop();
+
+      ensureBlock(val);
+      return val;
+    };
   },
 
   BinaryOp: function(op) {
@@ -224,11 +239,7 @@ var exp = {
 
   Pick: function() {
     this.exec = function(env) {
-      ensureStack(env, 1);
-
-      var index = env.stack.pop();
-      ensureInt(index);
-
+      var index = env.stack.popInt();
       if (index < 0)
         throw new exp.RuntimeError('ø must specify non-negative index (' + index + ' given).');
 
@@ -241,18 +252,14 @@ var exp = {
 
   PrintInt: function() {
     this.exec = function(env) {
-      ensureStack(env, 1);
-
-      var x = env.stack.pop();
+      var x = env.stack.popInt();
       env.print(String(x));
     };
   },
 
   PrintChar: function() {
     this.exec = function(env) {
-      ensureStack(env, 1);
-
-      var code = env.stack.pop();
+      var code = env.stack.popInt();
       env.print(String.fromCharCode(code));
     };
   },
@@ -297,24 +304,15 @@ var exp = {
 
   RunSubroutine: function() {
     this.exec = function(env) {
-      ensureStack(env, 1);
-
-      var sub = env.stack.pop();
-      ensureBlock(sub);
-
+      var sub = env.stack.popBlock();
       sub.exec(env);
     };
   },
 
   If: function() {
     this.exec = function(env) {
-      ensureStack(env, 2);
-
-      var sub = env.stack.pop();
-      ensureBlock(sub);
-
-      var condition = env.stack.pop();
-      ensureInt(condition);
+      var sub = env.stack.popBlock();
+      var condition = env.stack.popInt();
 
       /* Implicit int -> bool conversion. */
       if (condition)
@@ -324,21 +322,13 @@ var exp = {
 
   While: function() {
     this.exec = function(env) {
-      ensureStack(env, 2);
-
-      var body = env.stack.pop();
-      ensureBlock(body);
-
-      var condition = env.stack.pop();
-      ensureBlock(condition);
+      var body = env.stack.popBlock();
+      var condition = env.stack.popBlock();
 
       var result = true;
       while (result) {
         condition.exec(env);
-        ensureStack(env, 1);
-
-        result = env.stack.pop();
-        ensureInt(result);
+        result = env.stack.popInt();
 
         /* Implicit int -> bool conversion. */
         if (result)
@@ -349,13 +339,8 @@ var exp = {
 
   Random: function() {
     this.exec = function(env) {
-      ensureStack(env, 2);
-
-      var hi = env.stack.pop();
-      ensureInt(hi);
-
-      var lo = env.stack.pop();
-      ensureInt(lo);
+      var hi = env.stack.popInt();
+      var lo = env.stack.popInt();
 
       var rand = Math.floor((Math.random() * (hi - lo + 1)) + lo);
       env.stack.push(rand);
