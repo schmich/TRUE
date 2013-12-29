@@ -135,6 +135,9 @@ var exp = {
       ensureInt(x);
       ensureInt(y);
 
+      if (y == 0)
+        throw new exp.RuntimeError('Divide by zero.');
+
       return Math.floor(x / y);
     });
   },

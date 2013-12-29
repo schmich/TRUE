@@ -58,6 +58,7 @@ function ScriptCtrl($scope) {
 // alphabet:  27 [1-$][$123\-,]#
 // greet:     "Hello, "[^$~][,]#%"!"
 // quine:     ["'[,34,$!34,'],!"]'[,34,$!34,'],!
+// add:       [[$][1-\1+\]#%]add:5 7add;!
 // [0[^$~][]#%]readAll:
 // [$$47>\58\>&]isDigit:
 // [0[^isDigit;!][\10*\48-+]#%]readInt:
