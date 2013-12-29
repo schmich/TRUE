@@ -9,6 +9,9 @@
   margin: 0;
   border: 1px solid #59f;
 }
+#run:hover, #step:hover {
+  background: #26e;
+}
 #script {
   height: 400px;
   width: 1000px;
