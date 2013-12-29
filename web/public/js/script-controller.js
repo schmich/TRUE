@@ -37,7 +37,11 @@ function ScriptCtrl($scope) {
       var program = $parser.parse(script);
       program.exec(env);
     } catch(e) {
-      $scope.error = e.message;
+      if (e instanceof $parser.SyntaxError) {
+        $scope.error = e.message + ' At line ' + e.line + ', column ' + e.column + '.';
+      } else {
+        $scope.error = e.message;
+      }
     }
 
     $scope.stack = env.stack;

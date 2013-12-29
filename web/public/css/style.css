@@ -9,6 +9,9 @@
   margin: 0;
   border: 1px solid #59f;
 }
+#step {
+  margin-left: 3px;
+}
 #run:hover, #step:hover {
   background: #26e;
 }
