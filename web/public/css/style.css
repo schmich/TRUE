@@ -5,15 +5,20 @@
 #run, #step {
   color: #fff;
   background: #59f;
-  padding: 3px 20px;
+  padding: 0px 20px;
   margin: 0;
   border: 1px solid #59f;
+  height: 43px;
+  width: 120px;
+  font: 22px 'Helvetica Neue';
+  vertical-align: top;
 }
 #step {
   margin-left: 3px;
 }
 #run:hover, #step:hover {
   background: #26e;
+  border: 1px solid #26e;
 }
 #script {
   height: 400px;
@@ -21,10 +26,14 @@
   display: block;
 }
 #input {
-  padding: 3px 3px;
+  height: 40px;
+  width: 500px;
+  padding: 0px 3px;
   margin: 0;
-  border: 1px solid #999;
   margin-right: 5px;
+}
+#script, #input {
+  border: 1px solid #aaa;
 }
 #output {
   margin-top: 10px;
@@ -42,4 +51,16 @@
 }
 .content {
   padding: 10px;
+}
+::-webkit-input-placeholder {
+  font-family: 'Helvetica Neue';
+}
+:-moz-placeholder {
+  font-family: 'Helvetica Neue';
+}
+::-moz-placeholder {
+  font-family: 'Helvetica Neue';
+}
+:-ms-input-placeholder {
+  font-family: 'Helvetica Neue';
 }
