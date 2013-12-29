@@ -6,22 +6,6 @@ function block(x) {
   return x instanceof exp.Block;
 }
 
-function trueValue() {
-  return -1;
-}
-
-function falseValue() {
-  return 0;
-}
-
-function isTrue(x) {
-  return x != falseValue();
-}
-
-function isFalse(x) {
-  return x == falseValue();
-}
-
 function ensureBlock(x) {
   if (!block(x))
     throw new exp.TypeError('block', trueType(x));
@@ -153,7 +137,7 @@ var exp = {
       ensureInt(x);
       ensureInt(y);
 
-      return (x == y) ? trueValue() : falseValue();
+      return -(x == y);
     });
   },
 
@@ -162,7 +146,7 @@ var exp = {
       ensureInt(x);
       ensureInt(y);
 
-      return (x > y) ? trueValue() : falseValue();
+      return -(x > y);
     });
   },
 
@@ -171,7 +155,7 @@ var exp = {
       ensureInt(x);
       ensureInt(y);
 
-      return (isTrue(x) && isTrue(y)) ? trueValue() : falseValue();
+      return x & y;
     });
   },
 
@@ -180,7 +164,7 @@ var exp = {
       ensureInt(x);
       ensureInt(y);
 
-      return (isTrue(x) || isTrue(y)) ? trueValue() : falseValue();
+      return x | y;
     });
   },
 
@@ -188,7 +172,7 @@ var exp = {
     return new exp.UnaryOp(function(x) {
       ensureInt(x);
 
-      return isTrue(x) ? falseValue() : trueValue();
+      return ~x;
     });
   },
 
@@ -332,7 +316,8 @@ var exp = {
       var condition = env.stack.pop();
       ensureInt(condition);
 
-      if (isTrue(condition))
+      /* Implicit int -> bool conversion. */
+      if (condition)
         sub.exec(env);
     };
   },
@@ -354,7 +339,8 @@ var exp = {
         var result = env.stack.pop();
         ensureInt(result);
 
-        if (isTrue(result))
+        /* Implicit int -> bool conversion. */
+        if (result)
           body.exec(env);
         else
           break;

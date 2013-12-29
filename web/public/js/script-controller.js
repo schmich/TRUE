@@ -38,6 +38,7 @@ function ScriptCtrl($scope) {
     // strrev:    1_ 0[1_=~][^$]#%[$1_=~][$,%]#
     // strlen:    0x:^[1_=~][^x;1+x:]#x;.
     // prime:     99 9[1-$][\$@$@$@$@\/*=[1-$$[%\1-$@]?0=[\$.' ,\]?]?]#
+    // alphabet:  27 [1-$][$123\-,]#
     // [$$47>\58\>&]isDigit:
     // [0[^isDigit;!][\10*\48-+]#%]readInt:
 
@@ -56,7 +57,7 @@ function ScriptCtrl($scope) {
       var program = $parser.parse(script);
       program.exec(env);
     } catch(e) {
-      $scope.error = e.message;  
+      $scope.error = e.message;
     }
 
     $scope.stack = env.stack;
