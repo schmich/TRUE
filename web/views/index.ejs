@@ -16,7 +16,7 @@
   <form ng-submit="runScript()" >
     <textarea id="script" placeholder="Script"><%= script || "1[2[+.]!]!" %></textarea>
     <div class="control">
-      <input id="input" type="text" value="" placeholder="Input" />
+      <input id="input" type="text" value="<%= input || '' %>" placeholder="Input" />
       <input id="run" type="submit" value="Run" />
       <button id="step">Step</button>
     </div>

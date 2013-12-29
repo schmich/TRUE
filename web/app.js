@@ -26,7 +26,11 @@ app.get('/', function(req, res) {
   if (req.query.s)
     script = base64.decode(req.query.s);
 
-  res.render('index', { script: script });
+  var input = null;
+  if (req.query.i)
+    input = req.query.i;
+
+  res.render('index', { script: script, input: input });
 });
 
 http.createServer(app).listen(app.get('port'), function(){
