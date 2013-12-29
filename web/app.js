@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var base64 = require('urlsafe-base64');
 
 var app = express();
 
@@ -21,7 +22,11 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', function(req, res) {
-  res.render('index');
+  var script = null;
+  if (req.query.s)
+    script = base64.decode(req.query.s);
+
+  res.render('index', { script: script });
 });
 
 http.createServer(app).listen(app.get('port'), function(){
