@@ -24,9 +24,11 @@
   margin-right: 5px;
 }
 #output {
+  margin-top: 10px;
   white-space: pre;
 }
 #error {
+  margin-top: 10px;
   background: #faa;
 }
 #stack ul, #vars ul {

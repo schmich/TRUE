@@ -332,18 +332,17 @@ var exp = {
       var condition = env.stack.pop();
       ensureBlock(condition);
 
-      while (true) {
+      var result = true;
+      while (result) {
         condition.exec(env);
         ensureStack(env, 1);
 
-        var result = env.stack.pop();
+        result = env.stack.pop();
         ensureInt(result);
 
         /* Implicit int -> bool conversion. */
         if (result)
           body.exec(env);
-        else
-          break;
       }
     };
   },
