@@ -6,7 +6,7 @@ function ScriptCtrl($scope) {
   $scope.vars = {};
 
   $scope.halted = false;
-  $scope.running = false;
+  $scope.debugging = false;
   $scope.stepper = null;
   $scope.command = null;
 
@@ -120,7 +120,7 @@ function ScriptCtrl($scope) {
 
     var next = $scope.stepper.next();
     if (!next)
-      $scope.running = false;
+      $scope.debugging = false;
     else
       $scope.command = next;
   };
@@ -134,7 +134,7 @@ function ScriptCtrl($scope) {
     if (!valid)
       return;
 
-    $scope.running = true;
+    $scope.debugging = true;
     $scope.stack = env.stack;
     $scope.vars = env.vars;
     $scope.stepper = program.stepper(env);
@@ -145,7 +145,7 @@ function ScriptCtrl($scope) {
   function stopScript() {
     $scope.script = '';
     $scope.halted = false;
-    $scope.running = false;
+    $scope.debugging = false;
     $scope.stepper = null;
     $scope.command = null;
     setTimeout(function() { $('#script').focus(); });
