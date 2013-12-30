@@ -25,7 +25,7 @@ function ScriptCtrl($scope) {
     }
   });
 
-  function initializeRun() {
+  function compileScript() {
     var script = $('#script').val();
     $scope.script = script;
 
@@ -48,11 +48,11 @@ function ScriptCtrl($scope) {
     $scope.error = null;
 
     var program = null;
-    tryRun(function() {
+    var valid = tryRun(function() {
       program = $parser.parse(script);
     });
 
-    return [program, env];
+    return [valid, program, env];
   }
 
   function tryRun(runner) {
@@ -73,9 +73,13 @@ function ScriptCtrl($scope) {
   }
 
   $scope.runScript = function() {
-    var data = initializeRun();
-    var program = data[0];
-    var env = data[1];
+    var data = compileScript();
+    var valid = data[0];
+    var program = data[1];
+    var env = data[2];
+
+    if (!valid)
+      return;
 
     tryRun(function() {
       program.exec(env);
@@ -122,12 +126,15 @@ function ScriptCtrl($scope) {
   };
 
   $scope.debugScript = function() {
+    var data = compileScript();
+    var valid = data[0];
+    var program = data[1];
+    var env = data[2];
+
+    if (!valid)
+      return;
+
     $scope.running = true;
-
-    var data = initializeRun();
-    var program = data[0];
-    var env = data[1]; 
-
     $scope.stack = env.stack;
     $scope.vars = env.vars;
     $scope.stepper = program.stepper(env);
@@ -140,6 +147,7 @@ function ScriptCtrl($scope) {
     $scope.halted = false;
     $scope.running = false;
     $scope.stepper = null;
+    $scope.command = null;
     setTimeout(function() { $('#script').focus(); });
   }
 

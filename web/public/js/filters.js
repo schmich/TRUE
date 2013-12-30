@@ -13,7 +13,7 @@ $app.filter('reverse', function() {
 $app.filter('highlight', function($sce) {
   return function(src, command) {
     if (!command)
-      return src;
+      return $sce.trustAsHtml(html);
 
     var active = command.source;
 
