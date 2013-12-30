@@ -93,9 +93,11 @@ var exp = {
 
       return {
         step: function() {
-          var cmd = env.commands.shift();
-          if (cmd !== undefined)
-            cmd.step(env);
+          do {
+            var cmd = env.commands.shift();
+            if (cmd !== undefined)
+              cmd.step(env);
+          } while (cmd && cmd.pass);
 
           return cmd;
         }
@@ -281,6 +283,7 @@ var exp = {
 
   Block: function(commands) {
     this.commands = commands;
+
     this.exec = function(env) {
       for (var i = 0; i < commands.length; ++i) {
         commands[i].exec(env);
@@ -439,6 +442,8 @@ var exp = {
         env.addBlock(body);
       }
     };
+
+    this.pass = true;
   },
 
   WhileRepeat: function(condition, body) {
@@ -446,6 +451,8 @@ var exp = {
       env.stack.push(condition);
       env.stack.push(body);
     };
+
+    this.pass = true;
   },
 
   Random: function() {

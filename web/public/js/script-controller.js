@@ -4,6 +4,9 @@ function ScriptCtrl($scope) {
   $scope.stack = [];
   $scope.vars = {};
 
+  $scope.running = false;
+  $scope.stepper = null;
+
   $(window).on('keypress', function(e) {
     if (e.keyCode == 18 && e.ctrlKey /* Ctrl+R */) {
       $scope.$apply(function() {
@@ -12,7 +15,7 @@ function ScriptCtrl($scope) {
     }
   });
 
-  $scope.runScript = function() {
+  function initializeRun() {
     var script = $('#script').val();
 
     var env = new $t.Env();
@@ -33,9 +36,17 @@ function ScriptCtrl($scope) {
     $scope.output = '';
     $scope.error = null;
 
+    var program = null;
+    safeRun(function() {
+      program = $parser.parse(script);
+    });
+
+    return [program, env];
+  }
+
+  function safeRun(runner) {
     try {
-      var program = $parser.parse(script);
-      program.exec(env);
+      runner();
     } catch(e) {
       if (e instanceof $parser.SyntaxError) {
         $scope.error = e.message + ' At line ' + e.line + ', column ' + e.column + '.';
@@ -43,9 +54,44 @@ function ScriptCtrl($scope) {
         $scope.error = e.message;
       }
     }
+  }
+
+  $scope.runScript = function() {
+    var data = initializeRun();
+    var program = data[0];
+    var env = data[1];
+
+    safeRun(function() {
+      program.exec(env);
+    });
 
     $scope.stack = env.stack;
     $scope.vars = env.vars;
+  };
+
+  $scope.stepScript = function() {
+    function makeStep() {
+      var cmd = $scope.stepper.step();
+      console.debug(cmd);
+
+      if (!cmd)
+        $scope.running = false;
+    }
+
+    if ($scope.running) {
+      makeStep();
+    } else {
+      $scope.running = true;
+
+      var data = initializeRun();
+      var program = data[0];
+      var env = data[1]; 
+
+      $scope.stack = env.stack;
+      $scope.vars = env.vars;
+      $scope.stepper = program.stepper(env);
+      makeStep();
+    }
   };
 }
 

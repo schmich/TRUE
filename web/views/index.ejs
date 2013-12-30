@@ -7,25 +7,26 @@
   <script src="/js/jquery.min.js" type="text/javascript"></script>
   <script src="/js/angular.min.js" type="text/javascript"></script>
   <script src="/js/app.js" type="text/javascript"></script>
+  <script src="/js/filters.js" type="text/javascript"></script>
   <script src="/js/script-controller.js" type="text/javascript"></script>
   <script src="/js/true.js" type="text/javascript"></script>
   <script src="/js/parser.js" type="text/javascript"></script>
 </head>
 <body ng-app="TRUE" ng-controller="ScriptCtrl">
 <div class="content">
-  <form ng-submit="runScript()" >
+  <form>
     <textarea id="script" placeholder="Script"><%= script || "1[2[+.]!]!" %></textarea>
     <div class="control">
       <input id="input" type="text" value="<%= input || '' %>" placeholder="Input" />
-      <input id="run" type="submit" value="Run" />
-      <button id="step">Step</button>
+      <button id="run" ng-click="runScript()">Run</button>
+      <button id="step" ng-click="stepScript()">Step</button>
     </div>
   </form>
   <div id="output">{{output}}</div>
   <div ng-if="error != null" id="error">{{error}}</div>
   <div id="stack">
     <ul>
-      <li ng-repeat="item in stack track by $index">{{item}}</li>
+      <li ng-repeat="item in stack |reverse track by $index">{{item | toString}}</li>
     </ul>
   </div>
   <div id="vars">
