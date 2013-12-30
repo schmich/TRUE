@@ -2,7 +2,7 @@ var assert = require('assert');
 var parser = require('./parser.js');
 var t = require('./true.js');
 
-function run(script) {
+function execRun(script) {
   var env = new $t.Env();
   var results = {
     s: env.stack,
@@ -13,6 +13,21 @@ function run(script) {
   };
   var program = $parser.parse(script);
   program.exec(env);
+  return results;
+}
+
+function stepRun(script) {
+  var env = new $t.Env();
+  var results = {
+    s: env.stack,
+    out: ''
+  };
+  env.put = function(s) {
+    results.out += s;
+  };
+  var program = $parser.parse(script);
+  var stepper = program.stepper(env);
+  while (stepper.step()) { }
   return results;
 }
 
@@ -177,28 +192,33 @@ var tests = [
 ];
 
 describe('TRUE', function() {
-  for (var i = 0; i < tests.length; ++i) {
-    var test = tests[i];
+  var runTypes = [execRun, stepRun];
+  for (var r = 0; r < runTypes.length; ++r) {
+    var runner = runTypes[r];
 
-    (function(test) {
-      var script = test[0];
-      it('script: ' + script, function() {
-        var expectedResult = test[1];
-        if (expectedResult instanceof Array) {
-          var expectedOutput = test[2];
+    for (var i = 0; i < tests.length; ++i) {
+      var test = tests[i];
 
-          var r = run(script);
-          arrEq(expectedResult, r.s);
+      (function(test, runner) {
+        var script = test[0];
+        it('script: ' + script, function() {
+          var expectedResult = test[1];
+          if (expectedResult instanceof Array) {
+            var expectedOutput = test[2];
 
-          if (expectedOutput !== undefined) {
-            assert.equal(expectedOutput, r.out);
+            var r = runner(script);
+            arrEq(expectedResult, r.s);
+
+            if (expectedOutput !== undefined) {
+              assert.equal(expectedOutput, r.out);
+            }
+          } else {
+            assert.throws(function() {
+              var r = runner(script);
+            }, expectedResult);
           }
-        } else {
-          assert.throws(function() {
-            var r = run(script);
-          }, expectedResult);
-        }
-      });
-    })(test);
+        });
+      })(test, runner);
+    }
   }
 });
