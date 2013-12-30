@@ -1,4 +1,5 @@
 function ScriptCtrl($scope) {
+  $scope.script = '';
   $scope.output = '';
   $scope.error = null;
   $scope.stack = [];
@@ -6,6 +7,13 @@ function ScriptCtrl($scope) {
 
   $scope.running = false;
   $scope.stepper = null;
+
+  $(window).on('keydown', function(e) {
+    $scope.$apply(function() {
+      if (e.keyCode == 27 /* Escape */)
+        stopScript();
+    });
+  });
 
   $(window).on('keypress', function(e) {
     if (e.keyCode == 18 && e.ctrlKey /* Ctrl+R */) {
@@ -17,6 +25,7 @@ function ScriptCtrl($scope) {
 
   function initializeRun() {
     var script = $('#script').val();
+    $scope.script = script;
 
     var env = new $t.Env();
     env.put = function(s) {
@@ -72,9 +81,8 @@ function ScriptCtrl($scope) {
   $scope.stepScript = function() {
     function makeStep() {
       var cmd = $scope.stepper.step();
-      console.debug(cmd);
 
-      if (!cmd)
+      if (!$scope.stepper.next())
         $scope.running = false;
     }
 
@@ -90,8 +98,17 @@ function ScriptCtrl($scope) {
       $scope.stack = env.stack;
       $scope.vars = env.vars;
       $scope.stepper = program.stepper(env);
-      makeStep();
     }
+  };
+
+  function stopScript() {
+    $scope.running = null;
+    $scope.stepper = null;
+    setTimeout(function() { $('#script').focus(); });
+  }
+
+  $scope.stopScript = function() {
+    stopScript();
   };
 }
 

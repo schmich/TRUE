@@ -100,6 +100,10 @@ var exp = {
           } while (cmd && cmd.pass);
 
           return cmd;
+        },
+
+        next: function() {
+          return env.commands[0];
         }
       }
     };

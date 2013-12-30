@@ -1,8 +1,8 @@
-#script, #input, #output, #error, #stack, #vars, #run, #step {
+#script, #debug, #input, #output, #error, #stack, #vars, #run, #step, #stop {
   color: #333;
   font: 28px Monaco;
 }
-#run, #step {
+#run, #step, #stop {
   color: #fff;
   background: #59f;
   padding: 0px 20px;
@@ -13,14 +13,14 @@
   font: 22px 'Helvetica Neue';
   vertical-align: top;
 }
-#step {
+#step, #stop {
   margin-left: 3px;
 }
-#run:hover, #step:hover {
+#run:hover, #step:hover, #stop:hover {
   background: #26e;
   border: 1px solid #26e;
 }
-#script {
+#script, #debug {
   height: 400px;
   width: 1000px;
   display: block;
@@ -32,7 +32,13 @@
   margin: 0;
   margin-right: 5px;
 }
-#script, #input {
+#debug {
+  padding: 2px 2px;
+  background: #f3f3f3;
+  color: #000;
+  white-space: pre;
+}
+#script, #debug, #input {
   border: 1px solid #aaa;
 }
 #output {
@@ -51,6 +57,10 @@
 }
 .content {
   padding: 10px;
+}
+.next-command {
+  background: #ff0;
+  outline: 1px solid #ee0;
 }
 ::-webkit-input-placeholder {
   font-family: 'Helvetica Neue';
