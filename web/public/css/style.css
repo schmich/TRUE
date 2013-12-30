@@ -58,11 +58,11 @@
 .content {
   padding: 10px;
 }
-.halted .next-command {
+.halted .active-command {
   background: #faa;
   outline: 1px solid #faa;
 }
-.next-command {
+.active-command {
   background: #ff0;
   outline: 1px solid #ee0;
 }
