@@ -290,6 +290,10 @@ var exp = {
       } 
     };
 
+    this.toString = function() {
+      return '[' + this.source.text + ']';
+    };
+
     this.step = this.exec;
   },
 

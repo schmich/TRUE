@@ -17,7 +17,7 @@ start = block:block
   { return new $t.Program(block); }
 
 block = commands:(ws (comment ws)* ws command:command ws (comment ws)* ws { return command; })*
-  { return new $t.Block(commands); }
+  { return annotate(new $t.Block(commands)); }
 
 command
   = pushInt

@@ -26,7 +26,7 @@
   <div ng-if="error != null" id="error">{{error}}</div>
   <div id="stack">
     <ul>
-      <li ng-repeat="item in stack |reverse track by $index">{{item | toString}}</li>
+      <li ng-repeat="item in stack | reverse track by $index">{{item | toString}}</li>
     </ul>
   </div>
   <div id="vars">
