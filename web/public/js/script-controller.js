@@ -12,14 +12,15 @@ function ScriptCtrl($scope) {
   $scope.command = null;
 
   $(window).on('keydown', function(e) {
-    $scope.$apply(function() {
-      if (e.keyCode == 27 /* Escape */)
+    if (e.keyCode == 27 /* Escape */) {
+      $scope.$apply(function() {
         stopScript();
-    });
+      });
+    }
   });
 
   $(window).on('keypress', function(e) {
-    if (e.keyCode == 18 && e.ctrlKey /* Ctrl+R */) {
+    if ((e.keyCode == 18 || e.keyCode == 13) && e.ctrlKey /* Ctrl+R, Ctrl+Enter */) {
       $scope.$apply(function() {
         $scope.runScript();
       });

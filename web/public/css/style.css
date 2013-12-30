@@ -1,6 +1,42 @@
 * {
   box-sizing: border-box;
 }
+a, a:visited {
+  text-decoration: none;
+  color: #59f;
+}
+a:hover {
+  color: #26e;
+}
+.header {
+  background: #f3f3f3;
+  padding: 10px 10px;
+}
+h2 {
+  font: 22px 'Helvetica Neue';
+  color: #555;
+}
+.header h1 {
+  margin: 0;
+  padding: 0;
+  font: 22px 'Helvetica Neue';
+  color: #bbb;
+  float: left;
+}
+.header nav {
+  float: right;
+  vertical-align: middle;
+  padding-top: 4px;
+  margin-right: 10px;
+}
+.header nav a {
+  margin-left: 15px;
+}
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
+}
 #script, #debug-panel .source, #input, #output, #error-message, #stack, #vars, button {
   color: #333;
   font: 26px Monaco;
