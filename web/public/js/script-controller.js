@@ -5,8 +5,10 @@ function ScriptCtrl($scope) {
   $scope.stack = [];
   $scope.vars = {};
 
+  $scope.halted = false;
   $scope.running = false;
   $scope.stepper = null;
+  $scope.command = null;
 
   $(window).on('keydown', function(e) {
     $scope.$apply(function() {
@@ -46,23 +48,28 @@ function ScriptCtrl($scope) {
     $scope.error = null;
 
     var program = null;
-    safeRun(function() {
+    tryRun(function() {
       program = $parser.parse(script);
     });
 
     return [program, env];
   }
 
-  function safeRun(runner) {
+  function tryRun(runner) {
+    var error = false;
+
     try {
       runner();
     } catch(e) {
+      error = true;
       if (e instanceof $parser.SyntaxError) {
         $scope.error = e.message + ' At line ' + e.line + ', column ' + e.column + '.';
       } else {
         $scope.error = e.message;
       }
     }
+
+    return !error;
   }
 
   $scope.runScript = function() {
@@ -70,7 +77,7 @@ function ScriptCtrl($scope) {
     var program = data[0];
     var env = data[1];
 
-    safeRun(function() {
+    tryRun(function() {
       program.exec(env);
     });
 
@@ -78,31 +85,60 @@ function ScriptCtrl($scope) {
     $scope.vars = env.vars;
   };
 
+  $scope.resumeScript = function() {
+    var run = function() {
+      while ($scope.stepper.step()) {
+        /* Execute all commands. */
+      }
+    };
+
+    if (!tryRun(run)) {
+      $scope.command = $scope.stepper.next();
+      $scope.halted = true;
+      return;
+    }
+
+    stopScript();
+  }
+
   $scope.stepScript = function() {
-    function makeStep() {
-      var cmd = $scope.stepper.step();
+    if ($scope.halted)
+      return;
 
-      if (!$scope.stepper.next())
-        $scope.running = false;
+    var run = function() {
+      $scope.command = $scope.stepper.step();
+    };
+
+    if (!tryRun(run)) {
+      $scope.halted = true;
+      return;
     }
 
-    if ($scope.running) {
-      makeStep();
-    } else {
-      $scope.running = true;
+    var next = $scope.stepper.next();
+    if (!next)
+      $scope.running = false;
+    else
+      $scope.command = next;
+  };
 
-      var data = initializeRun();
-      var program = data[0];
-      var env = data[1]; 
+  $scope.debugScript = function() {
+    $scope.running = true;
 
-      $scope.stack = env.stack;
-      $scope.vars = env.vars;
-      $scope.stepper = program.stepper(env);
-    }
+    var data = initializeRun();
+    var program = data[0];
+    var env = data[1]; 
+
+    $scope.stack = env.stack;
+    $scope.vars = env.vars;
+    $scope.stepper = program.stepper(env);
+    $scope.command = $scope.stepper.next();
+    setTimeout(function() { $('#step').focus(); });
   };
 
   function stopScript() {
-    $scope.running = null;
+    $scope.script = '';
+    $scope.halted = false;
+    $scope.running = false;
     $scope.stepper = null;
     setTimeout(function() { $('#script').focus(); });
   }

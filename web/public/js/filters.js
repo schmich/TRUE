@@ -11,9 +11,13 @@ $app.filter('reverse', function() {
 });
 
 $app.filter('highlight', function($sce) {
-  return function(src, item) {
-    var next = item.next().source;
+  return function(src, command) {
+    if (!command)
+      return src;
 
+    var next = command.source;
+
+    // This is really inefficient. We could cache this info somewhere.
     var lines = src.split("\n");
     var index = 0;
     for (var i = 0; i < next.line - 1; ++i) {

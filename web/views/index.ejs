@@ -16,12 +16,14 @@
 <div class="content">
   <form>
     <textarea ng-show="!running" id="script" placeholder="Script"><%= script || "1[2[+.]!]!" %></textarea>
-    <div ng-if="running" id="debug"><span ng-bind-html="script | highlight:stepper"></span></div>
+    <div ng-if="running" ng-class="{ halted: halted }" id="debug-script"><span ng-bind-html="script | highlight:command"></span></div>
     <div class="control">
       <input id="input" type="text" value="<%= input || '' %>" placeholder="Input" />
-      <button id="run" ng-click="runScript()">Run</button>
-      <button id="step" ng-click="stepScript()">Step</button>
+      <button id="run" ng-if="!running" ng-click="runScript()">Run</button>
       <button id="stop" ng-if="running" ng-click="stopScript()">Stop</button>
+      <button id="debug" ng-if="!running" ng-click="debugScript()">Debug</button>
+      <button id="step" ng-if="running" ng-click="stepScript()">Step</button>
+      <button id="go" ng-if="running" ng-click="resumeScript();">Go</button>
     </div>
   </form>
   <div id="output">{{output}}</div>

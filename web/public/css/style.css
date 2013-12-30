@@ -1,8 +1,8 @@
-#script, #debug, #input, #output, #error, #stack, #vars, #run, #step, #stop {
+#script, #debug-script, #input, #output, #error, #stack, #vars, #run, #step, #stop, #go, #debug {
   color: #333;
   font: 28px Monaco;
 }
-#run, #step, #stop {
+#run, #step, #stop, #go, #debug {
   color: #fff;
   background: #59f;
   padding: 0px 20px;
@@ -13,14 +13,14 @@
   font: 22px 'Helvetica Neue';
   vertical-align: top;
 }
-#step, #stop {
+#step, #go {
   margin-left: 3px;
 }
-#run:hover, #step:hover, #stop:hover {
+#run:hover, #step:hover, #stop:hover, #go:hover, #debug:hover {
   background: #26e;
   border: 1px solid #26e;
 }
-#script, #debug {
+#script, #debug-script {
   height: 400px;
   width: 1000px;
   display: block;
@@ -32,13 +32,13 @@
   margin: 0;
   margin-right: 5px;
 }
-#debug {
+#debug-script {
   padding: 2px 2px;
   background: #f3f3f3;
   color: #000;
   white-space: pre-wrap;
 }
-#script, #debug, #input {
+#script, #debug-script, #input {
   border: 1px solid #aaa;
 }
 #output {
@@ -57,6 +57,10 @@
 }
 .content {
   padding: 10px;
+}
+.halted .next-command {
+  background: #faa;
+  outline: 1px solid #faa;
 }
 .next-command {
   background: #ff0;
