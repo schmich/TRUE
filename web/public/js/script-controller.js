@@ -82,12 +82,25 @@ function ScriptCtrl($scope) {
     if (!valid)
       return;
 
-    tryRun(function() {
+    var success = tryRun(function() {
       program.exec(env);
     });
 
+    if (!success) {
+      $scope.exception = true;
+    } else {
+      $scope.halted = true;
+    }
+
     $scope.stack = env.stack;
     $scope.vars = env.vars;
+
+    setTimeout(function() {
+      $scope.$apply(function() {
+        $scope.halted = false;
+        $scope.exception = false;
+      });
+    }, 2000);
   };
 
   $scope.resumeScript = function() {
@@ -137,6 +150,8 @@ function ScriptCtrl($scope) {
     if (!valid)
       return;
 
+    $scope.halted = false;
+    $scope.exception = false;
     $scope.debugging = true;
     $scope.stack = env.stack;
     $scope.vars = env.vars;
@@ -158,4 +173,6 @@ function ScriptCtrl($scope) {
   $scope.stopScript = function() {
     stopScript();
   };
+
+  $('#script').focus();
 }
