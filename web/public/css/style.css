@@ -135,6 +135,10 @@ button:disabled {
   background: #faa;
   outline: 1px solid #faa;
 }
+.halted .active-command {
+  background: #8e3;
+  outline: 1px solid #8e3;
+}
 .active-command {
   background: #ff0;
   outline: 1px solid #ee0;

@@ -17,7 +17,7 @@
 <div class="content">
   <form>
     <textarea ng-show="!debugging" id="script" placeholder="Script"><%= script || "1[2[+.]!]!" %></textarea>
-    <div id="debug-panel" ng-if="debugging" ng-class="{ exception: exception }">
+    <div id="debug-panel" ng-if="debugging" ng-class="{ exception: exception, halted: halted }">
       <div id="stack">
         <div class="title">Stack</div>
         <ul>
