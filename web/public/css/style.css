@@ -1,8 +1,8 @@
-#script, #debug-script, #input, #output, #error, #stack, #vars, #run, #step, #stop, #go, #debug {
+#script, #debug-script, #input, #output, #error, #stack, #vars, button {
   color: #333;
   font: 28px Monaco;
 }
-#run, #step, #stop, #go, #debug {
+button {
   color: #fff;
   background: #59f;
   padding: 0px 20px;
@@ -16,9 +16,14 @@
 #step, #go {
   margin-left: 3px;
 }
-#run:hover, #step:hover, #stop:hover, #go:hover, #debug:hover {
+button:hover {
   background: #26e;
   border: 1px solid #26e;
+}
+button:disabled {
+  background: #ddd;
+  border: 1px solid #ddd;
+  color: #999;
 }
 #script, #debug-script {
   height: 400px;

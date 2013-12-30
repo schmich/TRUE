@@ -22,8 +22,8 @@
       <button id="run" ng-if="!running" ng-click="runScript()">Run</button>
       <button id="stop" ng-if="running" ng-click="stopScript()">Stop</button>
       <button id="debug" ng-if="!running" ng-click="debugScript()">Debug</button>
-      <button id="step" ng-if="running" ng-click="stepScript()">Step</button>
-      <button id="go" ng-if="running" ng-click="resumeScript();">Go</button>
+      <button id="step" ng-if="running" ng-disabled="halted" ng-click="stepScript()">Step</button>
+      <button id="go" ng-if="running" ng-disabled="halted" ng-click="resumeScript();">Go</button>
     </div>
   </form>
   <div id="output">{{output}}</div>
