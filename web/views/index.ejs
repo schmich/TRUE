@@ -42,7 +42,7 @@
       <button id="step" ng-if="debugging" ng-disabled="exception || halted" ng-click="stepScript()">Step</button>
       <button id="go" ng-if="debugging" ng-disabled="exception || halted" ng-click="resumeScript();">Go</button>
       <div class="debug-halted" ng-if="halted">Program complete.</div>
-      <div class="debug-error" ng-if="exception">Error.</div>
+      <div class="debug-error" ng-if="exception">Program error.</div>
     </div>
   </form>
   <div id="output">{{output}}</div>

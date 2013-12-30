@@ -1,12 +1,13 @@
 * {
   box-sizing: border-box;
 }
-#script, #debug-panel .source, #input, #output, #error, #stack, #vars, button, .debug-halted, .debug-error {
+#script, #debug-panel .source, #input, #output, #error, #stack, #vars, button {
   color: #333;
   font: 26px Monaco;
 }
 .debug-halted, .debug-error {
-  font-size: 20px;
+  color: #333;
+  font: 22px 'Helvetica Neue';
   background: #8e3;
   line-height: 40px;
   height: 100%;
