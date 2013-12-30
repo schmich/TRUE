@@ -1,9 +1,21 @@
 * {
   box-sizing: border-box;
 }
-#script, #debug-panel .source, #input, #output, #error, #stack, #vars, button {
+#script, #debug-panel .source, #input, #output, #error, #stack, #vars, button, .debug-halted, .debug-error {
   color: #333;
   font: 26px Monaco;
+}
+.debug-halted, .debug-error {
+  font-size: 20px;
+  background: #8e3;
+  line-height: 40px;
+  height: 100%;
+  vertical-align: top;
+  display: inline-block;
+  padding: 0 15px;
+}
+.debug-error {
+  background: #faa;
 }
 button {
   color: #fff;
@@ -81,7 +93,7 @@ button:disabled {
   overflow: scroll;
 }
 #stack .title, #vars .title {
-  font-size: 24px;
+  font-size: 22px;
   background: #444;
   padding: 3px 5px;
 }
@@ -119,7 +131,7 @@ button:disabled {
 .content {
   padding: 10px;
 }
-.halted .active-command {
+.exception .active-command {
   background: #faa;
   outline: 1px solid #faa;
 }

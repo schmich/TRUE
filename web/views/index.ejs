@@ -17,7 +17,7 @@
 <div class="content">
   <form>
     <textarea ng-show="!debugging" id="script" placeholder="Script"><%= script || "1[2[+.]!]!" %></textarea>
-    <div id="debug-panel" ng-if="debugging" ng-class="{ halted: halted }">
+    <div id="debug-panel" ng-if="debugging" ng-class="{ exception: exception }">
       <div id="stack">
         <div class="title">Stack</div>
         <ul>
@@ -39,8 +39,10 @@
       <button id="run" ng-if="!debugging" ng-click="runScript()">Run</button>
       <button id="stop" ng-if="debugging" ng-click="stopScript()">Stop</button>
       <button id="debug" ng-if="!debugging" ng-click="debugScript()">Debug</button>
-      <button id="step" ng-if="debugging" ng-disabled="halted" ng-click="stepScript()">Step</button>
-      <button id="go" ng-if="debugging" ng-disabled="halted" ng-click="resumeScript();">Go</button>
+      <button id="step" ng-if="debugging" ng-disabled="exception || halted" ng-click="stepScript()">Step</button>
+      <button id="go" ng-if="debugging" ng-disabled="exception || halted" ng-click="resumeScript();">Go</button>
+      <div class="debug-halted" ng-if="halted">Program complete.</div>
+      <div class="debug-error" ng-if="exception">Error.</div>
     </div>
   </form>
   <div id="output">{{output}}</div>

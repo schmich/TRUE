@@ -5,8 +5,9 @@ function ScriptCtrl($scope) {
   $scope.stack = [];
   $scope.vars = {};
 
-  $scope.halted = false;
+  $scope.exception = false;
   $scope.debugging = false;
+  $scope.halted = false;
   $scope.stepper = null;
   $scope.command = null;
 
@@ -91,22 +92,24 @@ function ScriptCtrl($scope) {
 
   $scope.resumeScript = function() {
     var run = function() {
-      while ($scope.stepper.step()) {
-        /* Execute all commands. */
-      }
+      do {
+        var cmd = $scope.stepper.step();
+        if (cmd)
+          $scope.command = cmd;
+      } while (cmd);
     };
 
     if (!tryRun(run)) {
       $scope.command = $scope.stepper.next();
-      $scope.halted = true;
+      $scope.exception = true;
       return;
     }
 
-    stopScript();
+    $scope.halted = true;
   }
 
   $scope.stepScript = function() {
-    if ($scope.halted)
+    if ($scope.exception)
       return;
 
     var run = function() {
@@ -114,13 +117,13 @@ function ScriptCtrl($scope) {
     };
 
     if (!tryRun(run)) {
-      $scope.halted = true;
+      $scope.exception = true;
       return;
     }
 
     var next = $scope.stepper.next();
     if (!next)
-      $scope.debugging = false;
+      $scope.halted = true;
     else
       $scope.command = next;
   };
@@ -144,8 +147,9 @@ function ScriptCtrl($scope) {
 
   function stopScript() {
     $scope.script = '';
-    $scope.halted = false;
+    $scope.exception = false;
     $scope.debugging = false;
+    $scope.halted = false;
     $scope.stepper = null;
     $scope.command = null;
     setTimeout(function() { $('#script').focus(); });
