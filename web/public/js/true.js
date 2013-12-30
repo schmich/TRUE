@@ -54,6 +54,18 @@ var exp = {
     this.vars = { };
     this.put = function() { };
     this.get = function() { return -1; };
+    this.commands = [];
+
+    this.addBlock = function(block) {
+      for (var i = block.commands.length - 1; i >= 0; --i) {
+        this.commands.unshift(block.commands[i]);
+      }
+    };
+
+    this.addCommand = function(command) {
+      this.commands.unshift(command);
+    };
+
     this.stack.popInt = function() {
       ensureStack(self, 1);
       var val = this.pop();
@@ -61,6 +73,7 @@ var exp = {
       ensureInt(val);
       return val;
     };
+
     this.stack.popBlock = function() {
       ensureStack(self, 1);
       var val = this.pop();
@@ -74,6 +87,20 @@ var exp = {
     this.exec = function(env) {
       startBlock.exec(env);
     };
+
+    this.stepper = function(env) {
+      env.addBlock(startBlock);
+
+      return {
+        step: function() {
+          var cmd = env.commands.shift();
+          if (cmd !== undefined)
+            cmd.step(env);
+
+          return cmd;
+        }
+      }
+    };
   },
 
   BinaryOp: function(op) {
@@ -84,6 +111,8 @@ var exp = {
       var l = env.stack.pop();
       env.stack.push(op(l, r));
     };
+
+    this.step = this.exec;
   },
 
   UnaryOp: function(op) {
@@ -93,12 +122,16 @@ var exp = {
       var s = env.stack.pop();
       env.stack.push(op(s)); 
     };
+
+    this.step = this.exec;
   },
 
   PushLiteral: function(value) {
     this.exec = function(env) {
       env.stack.push(value);
-    }
+    };
+
+    this.step = this.exec;
   },
 
   PushInt: function(value) {
@@ -207,6 +240,8 @@ var exp = {
       var x = env.stack[env.stack.length - 1];
       env.stack.push(x);
     };
+
+    this.step = this.exec;
   },
 
   Delete: function() {
@@ -215,6 +250,8 @@ var exp = {
 
       env.stack.pop();
     };
+
+    this.step = this.exec;
   },
 
   Swap: function() {
@@ -226,6 +263,8 @@ var exp = {
       env.stack.push(first);
       env.stack.push(second);
     };
+
+    this.step = this.exec;
   },
 
   Rotate: function() {
@@ -236,14 +275,19 @@ var exp = {
       env.stack.splice(env.stack.length - 3, 1);
       env.stack.push(item);
     };
+
+    this.step = this.exec;
   },
 
   Block: function(commands) {
+    this.commands = commands;
     this.exec = function(env) {
       for (var i = 0; i < commands.length; ++i) {
         commands[i].exec(env);
       } 
     };
+
+    this.step = this.exec;
   },
 
   Pick: function() {
@@ -257,6 +301,8 @@ var exp = {
       var item = env.stack[env.stack.length - 1 - index];
       env.stack.push(item);
     };
+
+    this.step = this.exec;
   },
 
   PutInt: function() {
@@ -264,6 +310,8 @@ var exp = {
       var x = env.stack.popInt();
       env.put(String(x));
     };
+
+    this.step = this.exec;
   },
 
   PutChar: function() {
@@ -271,6 +319,8 @@ var exp = {
       var code = env.stack.popInt();
       env.put(String.fromCharCode(code));
     };
+
+    this.step = this.exec;
   },
 
   // TODO: Support escaped quotes.
@@ -278,12 +328,16 @@ var exp = {
     this.exec = function(env) {
       env.put(string);
     };
+
+    this.step = this.exec;
   },
 
   GetChar: function() {
     this.exec = function(env) {
       env.stack.push(env.get());
     };
+
+    this.step = this.exec;
   },
 
   AssignVar: function(name) {
@@ -293,6 +347,8 @@ var exp = {
       var x = env.stack.pop();
       env.vars[name] = x;
     };
+
+    this.step = this.exec;
   },
 
   ReadVar: function(name) {
@@ -303,18 +359,27 @@ var exp = {
 
       env.stack.push(x); 
     };
+
+    this.step = this.exec;
   },
 
   PushSubroutine: function(block) {
     this.exec = function(env) {
       env.stack.push(block);
     };
+
+    this.step = this.exec;
   },
 
   RunSubroutine: function() {
     this.exec = function(env) {
       var sub = env.stack.popBlock();
       sub.exec(env);
+    };
+
+    this.step = function(env) {
+      var sub = env.stack.popBlock();
+      env.addBlock(sub);
     };
   },
 
@@ -326,6 +391,15 @@ var exp = {
       /* Implicit int -> bool conversion. */
       if (condition)
         sub.exec(env);
+    };
+
+    this.step = function(env) {
+      var sub = env.stack.popBlock();
+      var condition = env.stack.popInt();
+
+      /* Implicit int -> bool conversion. */
+      if (condition)
+        env.addBlock(sub);
     };
   },
 
@@ -344,6 +418,34 @@ var exp = {
           body.exec(env);
       }
     };
+
+    this.step = function(env) {
+      var body = env.stack.popBlock();
+      var condition = env.stack.popBlock();
+
+      env.addCommand(new exp.WhileCheck(condition, body, this));
+      env.addBlock(condition);
+    };
+  },
+
+  WhileCheck: function(condition, body, whileCmd) {
+    this.step = function(env) {
+      var result = env.stack.popInt();
+
+      /* Implicit int -> bool conversion. */
+      if (result) {
+        env.addCommand(whileCmd);
+        env.addCommand(new exp.WhileRepeat(condition, body));
+        env.addBlock(body);
+      }
+    };
+  },
+
+  WhileRepeat: function(condition, body) {
+    this.step = function(env) {
+      env.stack.push(condition);
+      env.stack.push(body);
+    };
   },
 
   Random: function() {
@@ -354,14 +456,18 @@ var exp = {
       var rand = Math.floor((Math.random() * (hi - lo + 1)) + lo);
       env.stack.push(rand);
     };
+
+    this.step = this.exec;
   },
 
   Flush: function() {
     this.exec = function(env) { };
+    this.step = this.exec;
   },
 
   Assembly: function() {
     this.exec = function(env) { };
+    this.step = this.exec;
   }
 };
 
