@@ -70,6 +70,12 @@ var exp = {
     };
   },
 
+  Program: function(startBlock) {
+    this.exec = function(env) {
+      startBlock.exec(env);
+    };
+  },
+
   BinaryOp: function(op) {
     this.exec = function(env) {
       ensureStack(env, 2);
