@@ -1,6 +1,9 @@
+* {
+  box-sizing: border-box;
+}
 #script, #debug-script, #input, #output, #error, #stack, #vars, button {
   color: #333;
-  font: 28px Monaco;
+  font: 26px Monaco;
 }
 button {
   color: #fff;
@@ -8,7 +11,7 @@ button {
   padding: 0px 20px;
   margin: 0;
   border: 1px solid #59f;
-  height: 43px;
+  height: 40px;
   width: 120px;
   font: 22px 'Helvetica Neue';
   vertical-align: top;
@@ -30,8 +33,8 @@ button:disabled {
   color: #999;
 }
 #script, #debug-script {
+  width: 100%;
   height: 400px;
-  width: 1000px;
   display: block;
 }
 #input {

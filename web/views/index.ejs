@@ -9,6 +9,7 @@
   <script src="/js/app.js" type="text/javascript"></script>
   <script src="/js/filters.js" type="text/javascript"></script>
   <script src="/js/script-controller.js" type="text/javascript"></script>
+  <script src="/js/examples-controller.js" type="text/javascript"></script>
   <script src="/js/true.js" type="text/javascript"></script>
   <script src="/js/parser.js" type="text/javascript"></script>
 </head>
@@ -36,6 +37,13 @@
   <div id="vars">
     <ul>
       <li ng-repeat="(k,v) in vars track by $index">{{k}}: {{v | toString}}</li>
+    </ul>
+  </div>
+  <div ng-controller="ExamplesCtrl">
+    <ul>
+      <li ng-repeat="example in examples">
+        <a ng-click="load(example)">{{example.name}}</a>
+      </li>
     </ul>
   </div>
 </div>
