@@ -33,7 +33,7 @@
   </div>
   <div id="vars">
     <ul>
-      <li ng-repeat="(k,v) in vars track by $index">{{k}}: {{v}}</li>
+      <li ng-repeat="(k,v) in vars track by $index">{{k}}: {{v | toString}}</li>
     </ul>
   </div>
 </div>
