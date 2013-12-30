@@ -10,6 +10,12 @@ $app.filter('reverse', function() {
   };
 });
 
+$app.filter('empty', function() {
+  return function(input) {
+    return $.isEmptyObject(input);
+  };
+});
+
 $app.filter('highlight', function($sce) {
   return function(src, command) {
     if (!command)

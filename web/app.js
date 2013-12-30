@@ -47,7 +47,7 @@ app.get('/examples', function(req, res) {
     },
     {
       name: 'Factorial',
-      script: '[$1=$[\\%1\\]?~[$1-f;!*]?]f:6f;!.',
+      script: '[$1=$[\\%1\\]?~[$1-f;!*]?]f:\ni;!f;!.',
       input: '6'
     },
     {
@@ -71,7 +71,7 @@ app.get('/examples', function(req, res) {
     {
       name: 'Greeter',
       script: '"Hello, "[^$~][,]#%"!"',
-      input: 'internet person'
+      input: 'world'
     },
     {
       name: 'Quine',

@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
 }
-#script, #debug-script, #input, #output, #error, #stack, #vars, button {
+#script, #debug-panel .source, #input, #output, #error, #stack, #vars, button {
   color: #333;
   font: 26px Monaco;
 }
@@ -15,9 +15,7 @@ button {
   width: 120px;
   font: 22px 'Helvetica Neue';
   vertical-align: top;
-}
-#step, #go {
-  margin-left: 3px;
+  margin-right: 3px;
 }
 button:hover {
   background: #26e;
@@ -32,9 +30,9 @@ button:disabled {
   background: #f3f3f3;
   color: #999;
 }
-#script, #debug-script {
+#script, #debug-panel {
   width: 100%;
-  height: 400px;
+  height: 450px;
   display: block;
 }
 #input {
@@ -44,14 +42,68 @@ button:disabled {
   margin: 0;
   margin-right: 5px;
 }
-#debug-script {
+#script, #debug-panel .source, #input {
+  border: 1px solid #aaa;
+}
+#debug-panel {
+  position: relative;
+}
+#debug-panel .source {
+  margin-left: 400px;
+  height: 100%;
   padding: 2px 2px;
   background: #f3f3f3;
   color: #000;
   white-space: pre-wrap;
+  border-left: 0;
 }
-#script, #debug-script, #input {
-  border: 1px solid #aaa;
+#debug-panel #stack {
+  background: #555;
+  width: 200px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-block;
+  color: #fff;
+  overflow: scroll;
+  border-right: 1px solid #777;
+}
+#debug-panel #vars {
+  background: #555;
+  width: 200px;
+  height: 100%;
+  position: absolute;
+  left: 200px;
+  top: 0;
+  display: inline-block;
+  color: #fff;
+  overflow: scroll;
+}
+#stack .title, #vars .title {
+  font-size: 24px;
+  background: #444;
+  padding: 3px 5px;
+}
+#stack ul, #vars ul {
+  font-size: 20px;
+  list-style-type: none;
+  padding: 2px 5px;
+  margin: 0;
+}
+#stack li, #vars li {
+  white-space: nowrap;
+  padding: 0;
+  margin: 0;
+}
+#vars .key {
+  color: #ccc;
+}
+#stack .empty, #vars .empty {
+  color: #aaa;
+  padding: 15px 0;
+  font-size: 16px;
+  text-align: center;
 }
 #output {
   margin-top: 10px;
@@ -60,9 +112,6 @@ button:disabled {
 #error {
   margin-top: 10px;
   background: #faa;
-}
-#stack ul, #vars ul {
-  list-style-type: none;
 }
 .control {
   margin-top: 10px;
