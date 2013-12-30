@@ -115,7 +115,7 @@ function ScriptCtrl($scope) {
 // Examples:
 // even/odd:  [$2/2*=]even:[even;!~]odd:6odd;!
 // even/odd (mutual recursion):
-//   [$0=$[1_\@%]?~[1-odd;!]?]even:[$0=~$[1_\@%]?~[1-even;!~]?]odd:6even;!
+//   [$0=$[1_\@%]?~[1-odd;!]?]even:[$0=$[0\@%]?~[1-even;!]?]odd:6even;!
 // factorial: [$1=$[\%1\]?~[$1-f;!*]?]f:`f;!.
 // strrev:    0[^$~][]#%[$][,]#
 // strlen:    0[^~][1+]#.
