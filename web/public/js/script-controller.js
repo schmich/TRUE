@@ -28,7 +28,7 @@ function ScriptCtrl($scope) {
   });
 
   function compileScript() {
-    var script = $('#script').val();
+    var script = $('#edit-script').val();
     $scope.script = script;
 
     var env = new $t.Env();
@@ -168,12 +168,12 @@ function ScriptCtrl($scope) {
     $scope.halted = false;
     $scope.stepper = null;
     $scope.command = null;
-    setTimeout(function() { $('#script').focus(); });
+    setTimeout(function() { $('#edit-script').focus(); });
   }
 
   $scope.stopScript = function() {
     stopScript();
   };
 
-  $('#script').focus();
+  $('#edit-script').focus();
 }

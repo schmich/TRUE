@@ -4,6 +4,7 @@
   <title>TRUE: A FALSE Interpreter</title>
   <link rel="stylesheet" href="/css/normalize.css" />
   <link rel="stylesheet" href="/css/style.css" />
+  <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
   <script src="/js/jquery.min.js" type="text/javascript"></script>
   <script src="/js/angular.min.js" type="text/javascript"></script>
   <script src="/js/app.js" type="text/javascript"></script>
@@ -17,17 +18,22 @@
 <div class="header group">
   <h1>TRUE: A FALSE Interpreter</h1>
   <nav>
-    <a href="#reference">reference</a>
-    <a href="#examples">examples</a>
-    <a href="http://esolangs.org/wiki/FALSE">esolangs</a>
-    <a href="http://en.wikipedia.org/wiki/FALSE">wikipedia</a>
-    <a href="http://strlen.com/false-language">origin</a>
+    <a href="#reference">Reference</a>
+    <a href="#examples">Examples</a>
+    <a href="http://esolangs.org/wiki/FALSE">Esolangs</a>
+    <a href="http://en.wikipedia.org/wiki/FALSE">Wikipedia</a>
+    <a href="http://strlen.com/false-language">Origin</a>
   <nav>
 </div>
 <div class="content">
   <form>
-    <textarea ng-show="!debugging" id="script" placeholder="Script"><%= script || "1[2[+.]!]!" %></textarea>
-    <div id="debug-panel" ng-if="debugging" ng-class="{ exception: exception, halted: halted }">
+    <div id="editor">
+      <div ng-show="!debugging" class="script-container">
+        <textarea id="edit-script" placeholder="Script"><%= script || "1[2[+.]!]!" %></textarea>
+      </div>
+      <div ng-show="debugging" id="debug-script" ng-class="{ exception: exception, halted: halted }"><!--
+        --><span ng-bind-html="script | highlight:command"></span><!--
+      --></div>
       <div id="stack">
         <div class="title">Stack</div>
         <ul>
@@ -42,7 +48,6 @@
           <li ng-repeat="(k,v) in vars track by $index"><span class="key">{{k}}:</span> <span class="value">{{v | toString}}</span></li>
         </ul>
       </div>
-      <div class="source"><span ng-bind-html="script | highlight:command"></span></div>
     </div>
     <div class="control">
       <input id="input" type="text" ng-disabled="debugging" value="<%= input || '' %>" placeholder="Input" />

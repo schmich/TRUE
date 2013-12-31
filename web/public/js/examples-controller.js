@@ -9,7 +9,7 @@ function ExamplesCtrl($scope, $http) {
     });
 
   $scope.load = function(example) {
-    $('#script').val(example.script);
+    $('#edit-script').val(example.script);
     $('#input').val(example.input);
     setTimeout(function() { $('#run').focus(); });
   };
