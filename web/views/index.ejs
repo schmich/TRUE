@@ -56,10 +56,10 @@
       <button id="debug" ng-if="!debugging" ng-click="debugScript()">Debug</button>
       <button id="step" ng-if="debugging" ng-disabled="exception || halted" ng-click="stepScript()">Step</button>
       <button id="go" ng-if="debugging" ng-disabled="exception || halted" ng-click="resumeScript();">Go</button>
-      <div class="program-halted" ng-show="halted">Program complete.</div>
-      <div class="program-exception" ng-show="exception">Program error.</div>
+      <div class="program-halted" ng-show="halted">Complete.</div>
+      <div class="program-exception" ng-show="exception">Error.</div>
     </div>
-    <div ng-if="error != null" id="error-message">{{error}}</div>
+    <div ng-if="error != null" id="error-message" ng-click="hideError()">{{error}}</div>
     <div id="output" ng-class="{ empty: !output }">{{output || 'Output'}}</div>
   </form>
   <!--

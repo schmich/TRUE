@@ -175,5 +175,9 @@ function ScriptCtrl($scope) {
     stopScript();
   };
 
+  $scope.hideError = function(elem) {
+    $scope.error = null;
+  };
+
   $('#edit-script').focus();
 }
