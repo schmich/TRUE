@@ -2,11 +2,12 @@
   box-sizing: border-box;
 }
 a, a:visited {
+  font-family: 'Helvetica Neue';
   text-decoration: none;
-  color: #59f;
+  color: #999;
 }
 a:hover {
-  color: #26e;
+  color: #59f;
 }
 .header {
   background: #f3f3f3;
@@ -100,7 +101,7 @@ button:disabled {
 #debug-panel .source {
   margin-left: 400px;
   height: 100%;
-  padding: 2px 2px;
+  padding: 2px 4px;
   background: #f3f3f3;
   color: #000;
   white-space: pre-wrap;
@@ -130,9 +131,9 @@ button:disabled {
   overflow: scroll;
 }
 #stack .title, #vars .title {
-  font-size: 22px;
+  font: 20px 'Helvetica Neue';
   background: #444;
-  padding: 3px 5px;
+  padding: 4px 6px;
 }
 #stack ul, #vars ul {
   font-size: 20px;
