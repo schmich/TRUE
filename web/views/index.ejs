@@ -60,7 +60,7 @@
       <div class="program-exception" ng-show="exception">Program error.</div>
     </div>
     <div ng-if="error != null" id="error-message">{{error}}</div>
-    <textarea id="output" placeholder="Output" readonly>{{output}}</textarea> 
+    <div id="output" ng-class="{ empty: !output }">{{output || 'Output'}}</div>
   </form>
   <!--
   <div ng-controller="ExamplesCtrl">

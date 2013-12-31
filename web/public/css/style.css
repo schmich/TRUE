@@ -143,7 +143,7 @@ button:disabled {
   padding: 4px 6px;
 }
 #stack ul, #vars ul {
-  font-size: 20px;
+  font-size: 18px;
   list-style-type: none;
   padding: 2px 5px;
   margin: 0;
@@ -154,7 +154,7 @@ button:disabled {
   margin: 0;
 }
 #vars .key {
-  color: #ccc;
+  color: #999;
 }
 #stack .empty, #vars .empty {
   color: #aaa;
@@ -163,10 +163,12 @@ button:disabled {
   text-align: center;
 }
 #output {
+  overflow: auto;
   margin-top: 10px;
   white-space: pre;
   height: 350px;
   width: 100%;
+  padding: 0 2px;
 }
 #error-message {
   margin-top: 10px;
@@ -192,15 +194,23 @@ button:disabled {
 }
 ::-webkit-input-placeholder {
   font-family: 'Open Sans';
+  color: #aaa;
 }
 :-moz-placeholder {
   font-family: 'Open Sans';
+  color: #aaa;
 }
 ::-moz-placeholder {
   font-family: 'Open Sans';
+  color: #aaa;
 }
 :-ms-input-placeholder {
   font-family: 'Open Sans';
+  color: #aaa;
+}
+#output.empty {
+  font-family: 'Open Sans';
+  color: #aaa;
 }
 /* "Hide" the placeholder text when the input is disabled. */
 :disabled::-webkit-input-placeholder {
