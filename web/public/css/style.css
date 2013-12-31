@@ -74,7 +74,7 @@ button {
   width: 120px;
   font: 22px 'Open Sans';
   vertical-align: top;
-  margin-right: 3px;
+  margin-right: 5px;
 }
 button:hover {
   background: #26e;
@@ -164,9 +164,9 @@ button:disabled {
   color: #999;
 }
 #stack .empty, #vars .empty {
-  color: #aaa;
+  color: #bbb;
   padding: 15px 0;
-  font-size: 16px;
+  font: 16px 'Open Sans';
   text-align: center;
 }
 #output {
@@ -180,7 +180,7 @@ button:disabled {
 #error-message {
   margin-top: 10px;
   background: #faa;
-  padding: 5px 7px;
+  padding: 7px 7px;
   font: 24px 'Open Sans';
   color: #755;
 }
