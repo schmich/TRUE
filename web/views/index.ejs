@@ -59,7 +59,7 @@
       <div class="program-halted" ng-show="halted">Complete.</div>
       <div class="program-exception" ng-show="exception">Error.</div>
     </div>
-    <div ng-if="error != null" id="error-message" ng-click="hideError()">{{error}}</div>
+    <div ng-if="error != null" id="error-message"><span class="dismiss" ng-click="hideError()">&times;</span>{{error}}</div>
     <div id="output" ng-class="{ empty: !output }">{{output || 'Output'}}</div>
   </form>
   <!--

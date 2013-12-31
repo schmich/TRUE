@@ -43,7 +43,7 @@ h2 {
 }
 #edit-script, #editor #debug-script, #input, #output, #stack, #vars, button {
   color: #333;
-  font: 26px Monaco, 'Consolas', monospace;
+  font: 26px Monaco, Consolas, monospace;
 }
 .program-halted, .program-exception {
   color: #353;
@@ -53,11 +53,16 @@ h2 {
   height: 100%;
   vertical-align: top;
   display: inline-block;
-  padding: 0 15px;
+  padding: 0 20px;
 }
 .program-exception {
   color: #755;
   background: #faa;
+}
+.dismiss {
+  color: #555;
+  padding: 0 15px 0 10px;
+  cursor: pointer;
 }
 button {
   color: #fff;
@@ -129,13 +134,14 @@ button:disabled {
   color: #555;
   overflow: auto;
   border: 1px solid #ccc;
-  border-left: 0;
 }
 #editor #stack {
   right: 200px;
+  width: 201px;
 }
 #editor #vars {
   right: 0;
+  border-left: 0;
 }
 #stack .title, #vars .title {
   color: #888;
