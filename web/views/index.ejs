@@ -62,15 +62,6 @@
     <div ng-if="error != null" id="error-message"><span class="dismiss" ng-click="hideError()">&times;</span>{{error}}</div>
     <div id="output" ng-class="{ empty: !output }">{{output || 'Output'}}</div>
   </form>
-  <!--
-  <div ng-controller="ExamplesCtrl">
-    <ul>
-      <li ng-repeat="example in examples">
-        <a ng-click="load(example)">{{example.name}}</a>
-      </li>
-    </ul>
-  </div>
-  -->
 </div>
 </body>
 </html>

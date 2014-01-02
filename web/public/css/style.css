@@ -53,7 +53,7 @@ h2 {
   height: 100%;
   vertical-align: top;
   display: inline-block;
-  padding: 0 20px;
+  padding: 0 22px;
 }
 .program-exception {
   color: #755;
@@ -144,7 +144,7 @@ button:disabled {
   border-left: 0;
 }
 #stack .title, #vars .title {
-  color: #888;
+  color: #666;
   font: 20px 'Open Sans';
   background: #eee;
   padding: 4px 6px;
