@@ -1,5 +1,6 @@
 var base64 = require('urlsafe-base64');
-var aceRange = ace.require('ace/range').Range;
+var ace = require('brace');
+var aceRange = ace.acequire('ace/range').Range;
 var parser = require('./parser').parser;
 var $t = parser.yy = require('./true');
 
