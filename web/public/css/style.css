@@ -41,9 +41,9 @@ h2 {
   display: table;
   clear: both;
 }
-#edit-script, #editor #debug-script, #input, #output, #stack, #vars, button {
+#edit-script, #input, #output, #stack, #vars, button {
   color: #333;
-  font: 26px Monaco, Consolas, monospace;
+  font: 26px Monaco, 'Ubuntu Mono', Consolas, monospace;
 }
 .program-halted, .program-exception {
   color: #353;
@@ -110,19 +110,14 @@ button:disabled {
   margin: 0;
   margin-right: 5px;
 }
-#edit-script, #editor #debug-script, #input, #output {
+#edit-script, #input, #output {
   border: 1px solid #bbb;
 }
 #editor {
   position: relative;
 }
-#editor #debug-script {
-  margin-right: 400px;
-  height: 100%;
-  padding: 2px 2px;
+.debugging .ace_content {
   background: #f3f3f3;
-  color: #000;
-  white-space: pre-wrap;
 }
 #editor #stack, #editor #vars {
   background: #fff;
@@ -199,6 +194,7 @@ button:disabled {
   outline: 1px solid #8e3;
 }
 .active-command {
+  position: absolute;
   background: #ff0;
   outline: 1px solid #ee0;
 }

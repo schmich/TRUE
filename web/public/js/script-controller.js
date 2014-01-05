@@ -1,3 +1,5 @@
+var aceRange = ace.require('ace/range').Range;
+
 function ScriptCtrl($scope) {
   $scope.script = '';
   $scope.output = '';
@@ -10,6 +12,9 @@ function ScriptCtrl($scope) {
   $scope.halted = false;
   $scope.stepper = null;
   $scope.command = null;
+
+  var editor = ace.edit('edit-script');
+  editor.setOption('highlightActiveLine', false);
 
   $(window).on('keydown', function(e) {
     if (e.keyCode == 27 /* Escape */) {
@@ -27,8 +32,35 @@ function ScriptCtrl($scope) {
     }
   });
 
+  var debugMarkerId = null;
+  $scope.$watch('command', function(command) {
+    if (!command)
+      return;
+
+    var range = new aceRange(
+      command.source.row.start,
+      command.source.column.start,
+      command.source.row.end,
+      command.source.column.end + 1
+    );
+
+    if (debugMarkerId !== null)
+      editor.getSession().removeMarker(debugMarkerId);
+
+    debugMarkerId = editor.getSession().addMarker(range, 'active-command', 'text');
+  });
+
+  $scope.$watch('debugging', function(debugging) {
+    editor.setReadOnly(debugging);
+
+    if (!debugging) {
+      editor.getSession().removeMarker(debugMarkerId);
+      debugMarkerId = null;
+    }
+  });
+
   function compileScript() {
-    var script = $('#edit-script').val();
+    var script = editor.getSession().getDocument().getValue();
     $scope.script = script;
 
     var env = new $t.Env();
@@ -175,5 +207,8 @@ function ScriptCtrl($scope) {
     $scope.error = null;
   };
 
-  $('#edit-script').focus();
+  setTimeout(function() {
+    editor.navigateFileEnd();
+    editor.focus();
+  });
 }

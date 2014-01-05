@@ -7,6 +7,7 @@
   <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
   <script src="/js/lib/jquery.min.js" type="text/javascript"></script>
   <script src="/js/lib/angular.min.js" type="text/javascript"></script>
+  <script src="/js/lib/ace/ace.js" type="text/javascript"></script>
   <script src="/js/app.js" type="text/javascript"></script>
   <script src="/js/filters.js" type="text/javascript"></script>
   <script src="/js/script-controller.js" type="text/javascript"></script>
@@ -28,12 +29,9 @@
 <div class="content">
   <form>
     <div id="editor">
-      <div ng-show="!debugging" class="script-container">
-        <textarea id="edit-script" placeholder="Script"><%= script || "1[2[+.]!]!" %></textarea>
+      <div class="script-container" ng-class="{ debugging: debugging, exception: exception, halted: halted }">
+        <div id="edit-script"><%= script || "1[2[+.]!]!" %></div>
       </div>
-      <div ng-show="debugging" id="debug-script" ng-class="{ exception: exception, halted: halted }"><!--
-        --><span ng-bind-html="script | highlight:command"></span><!--
-      --></div>
       <div id="stack">
         <div class="title">Stack</div>
         <ul>

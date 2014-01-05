@@ -175,14 +175,15 @@ function toInt(o) {
 }
 
 function annotate(obj, loc) {
+  // 0-based inclusive row/column numbers.
   obj.source = {
-    line: {
-      start: loc.first_line,
-      end: loc.last_line
+    row: {
+      start: loc.first_line - 1,
+      end: loc.last_line - 1
     },
-    col: {
-      start: loc.first_column + 1,
-      end: loc.last_column
+    column: {
+      start: loc.first_column,
+      end: loc.last_column - 1
     },
     start: loc.range[0],
     end: loc.range[1]
