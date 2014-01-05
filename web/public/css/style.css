@@ -168,7 +168,7 @@ button:disabled {
   overflow: auto;
   margin-top: 10px;
   white-space: pre;
-  height: 350px;
+  height: 300px;
   width: 100%;
   padding: 0 2px;
 }
@@ -220,14 +220,14 @@ button:disabled {
 }
 /* "Hide" the placeholder text when the input is disabled. */
 :disabled::-webkit-input-placeholder {
-  color: #f3f3f3;
+  color: rgba(243, 243, 243, 0);
 }
 :disabled:-moz-placeholder {
-  color: #f3f3f3;
+  color: rgba(243, 243, 243, 0);
 }
 :disabled::-moz-placeholder {
-  color: #f3f3f3;
+  color: rgba(243, 243, 243, 0);
 }
 :disabled:-ms-input-placeholder {
-  color: #f3f3f3;
+  color: rgba(243, 243, 243, 0);
 }
