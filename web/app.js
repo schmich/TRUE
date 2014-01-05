@@ -38,7 +38,7 @@ function generateBundle(hashes, callback) {
     for (var i = 0; i < files.length; ++i) {
       var path = './js/' + files[i];
       var stat = fs.statSync(path);
-      if (path.match(/\.js$/) && !path.match(/test/) && !stat.isDirectory()) {
+      if (path.match(/\.(js|jison)$/) && !path.match(/test/) && !stat.isDirectory()) {
         hashes[files[i]] = crypto.createHash('md5').update(fs.readFileSync(path)).digest('hex');
         builder.add('./' + files[i]);
       }
@@ -70,7 +70,7 @@ app.get('/js/bundle.js', function(req, res) {
         for (var i = 0; i < files.length; ++i) {
           var path = './js/' + files[i];
           var stat = fs.statSync(path);
-          if (path.match(/\.js$/) && !path.match(/test/) && !stat.isDirectory()) {
+          if (path.match(/\.(js|jison)$/) && !path.match(/test/) && !stat.isDirectory()) {
             var oldHash = bundleHashes[files[i]];
             var hash = crypto.createHash('md5').update(fs.readFileSync(path)).digest('hex');
             if (hash != oldHash) {

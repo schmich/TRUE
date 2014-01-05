@@ -10,7 +10,13 @@
 <INITIAL>\{           this.begin('comment');
 <comment>[^}]+\}      this.popState();
 
-<INITIAL>\"           this.begin('string'); string = '';
+<INITIAL>\"           %{
+                        this.begin('string');
+                        string = '';
+                        firstLine = yylloc.first_line;
+                        firstColumn = yylloc.first_column;
+                        rangeStart = yylloc.range[0];
+                      %}
 <string>\\\"          string += '"';
 <string>\\\\          string += '\\';
 <string>\\r           string += '\r';
@@ -18,6 +24,13 @@
 <string>\\t           string += '\t';
 <string>\"            %{
                         this.popState();
+                        yylloc = {
+                          first_line: firstLine,
+                          last_line: yylloc.last_line,
+                          first_column: firstColumn,
+                          last_column: yylloc.last_column,
+                          range: [rangeStart, yylloc.range[1]]
+                        };
                         yytext = string;
                         return 'STRING_LITERAL';
                       %}
