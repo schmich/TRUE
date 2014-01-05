@@ -18,11 +18,15 @@
 <string>\\n           string += '\n';
 <string>\\t           string += '\t';
 <string>\"            this.popState(); return 'STRING_LITERAL';
-<string>.             string += yytext;
+<string>.|\n          string += yytext;
 
 [A-Za-z]+             return 'VAR';
 \s+                   /* Skip whitespace. */
-\'.                   return 'CHAR_LITERAL';
+\'\\\\                char = '\\'; return 'CHAR_LITERAL';
+\'\\r                 char = '\r'; return 'CHAR_LITERAL';
+\'\\n                 char = '\n'; return 'CHAR_LITERAL';
+\'\\t                 char = '\t'; return 'CHAR_LITERAL';
+\'(.|\n)              char = yytext[1]; return 'CHAR_LITERAL';
 [0-9]+                return 'INT_LITERAL';
 <<EOF>>               return 'EOF';
 .                     return yytext[0];
@@ -85,7 +89,7 @@ pushInt: INT_LITERAL
   { $$ = annotate(new $t.PushInt(toInt($1)), @$); };
 
 pushChar: CHAR_LITERAL
-  { $$ = annotate(new $t.PushChar($1[1]), @$); };
+  { $$ = annotate(new $t.PushChar(char), @$); };
 
 add: '+'
   { $$ = annotate(new $t.Add(), @$); };

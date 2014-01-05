@@ -92,7 +92,7 @@ case 5: this.$ = annotate(new $t.Block([$$[$0]]), this._$);
 break;
 case 35: this.$ = annotate(new $t.PushInt(toInt($$[$0])), this._$); 
 break;
-case 36: this.$ = annotate(new $t.PushChar($$[$0][1]), this._$); 
+case 36: this.$ = annotate(new $t.PushChar(char), this._$); 
 break;
 case 37: this.$ = annotate(new $t.Add(), this._$); 
 break;
@@ -665,18 +665,26 @@ case 11:return 64;
 break;
 case 12:/* Skip whitespace. */
 break;
-case 13:return 38;
+case 13:char = '\\'; return 38;
 break;
-case 14:return 37;
+case 14:char = '\r'; return 38;
 break;
-case 15:return 5;
+case 15:char = '\n'; return 38;
 break;
-case 16:return yy_.yytext[0];
+case 16:char = '\t'; return 38;
+break;
+case 17:char = yy_.yytext[1]; return 38;
+break;
+case 18:return 37;
+break;
+case 19:return 5;
+break;
+case 20:return yy_.yytext[0];
 break;
 }
 },
-rules: [/^(?:\{)/,/^(?:[^}]+)/,/^(?:\})/,/^(?:")/,/^(?:\\")/,/^(?:\\\\)/,/^(?:\\r)/,/^(?:\\n)/,/^(?:\\t)/,/^(?:")/,/^(?:.)/,/^(?:[A-Za-z]+)/,/^(?:\s+)/,/^(?:'.)/,/^(?:[0-9]+)/,/^(?:$)/,/^(?:.)/],
-conditions: {"string":{"rules":[4,5,6,7,8,9,10],"inclusive":false},"comment":{"rules":[1,2],"inclusive":false},"INITIAL":{"rules":[0,3,11,12,13,14,15,16],"inclusive":true}}
+rules: [/^(?:\{)/,/^(?:[^}]+)/,/^(?:\})/,/^(?:")/,/^(?:\\")/,/^(?:\\\\)/,/^(?:\\r)/,/^(?:\\n)/,/^(?:\\t)/,/^(?:")/,/^(?:.|\n)/,/^(?:[A-Za-z]+)/,/^(?:\s+)/,/^(?:'\\\\)/,/^(?:'\\r)/,/^(?:'\\n)/,/^(?:'\\t)/,/^(?:'(.|\n))/,/^(?:[0-9]+)/,/^(?:$)/,/^(?:.)/],
+conditions: {"string":{"rules":[4,5,6,7,8,9,10],"inclusive":false},"comment":{"rules":[1,2],"inclusive":false},"INITIAL":{"rules":[0,3,11,12,13,14,15,16,17,18,19,20],"inclusive":true}}
 };
 return lexer;
 })();

@@ -71,7 +71,7 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var parser = (function(){
+var parserTest = (function(){
 var parser = {trace: function trace() { },
 yy: {},
 symbols_: {"error":2,"program":3,"opt_block":4,"EOF":5,"block":6,"command":7,"pushInt":8,"pushChar":9,"add":10,"subtract":11,"multiply":12,"quotient":13,"negate":14,"equal":15,"greater":16,"and":17,"or":18,"not":19,"duplicate":20,"delete":21,"swap":22,"rotate":23,"pick":24,"putInt":25,"putChar":26,"putString":27,"getChar":28,"pushSubroutine":29,"runSubroutine":30,"if":31,"while":32,"flush":33,"varAssign":34,"varRead":35,"random":36,"INT_LITERAL":37,"CHAR_LITERAL":38,"+":39,"-":40,"*":41,"/":42,"_":43,"=":44,">":45,"&":46,"|":47,"~":48,"$":49,"%":50,"\\":51,"@":52,"ø":53,".":54,",":55,"STRING_LITERAL":56,"^":57,"[":58,"]":59,"!":60,"?":61,"#":62,"ß":63,"VAR":64,":":65,";":66,"∆":67,"$accept":0,"$end":1},
@@ -92,7 +92,7 @@ case 5: this.$ = annotate(new $t.Block([$$[$0]]), this._$);
 break;
 case 35: this.$ = annotate(new $t.PushInt(toInt($$[$0])), this._$); 
 break;
-case 36: this.$ = annotate(new $t.PushChar($$[$0][1]), this._$); 
+case 36: this.$ = annotate(new $t.PushChar(char), this._$); 
 break;
 case 37: this.$ = annotate(new $t.Add(), this._$); 
 break;
@@ -296,14 +296,15 @@ function toInt(o) {
 }
 
 function annotate(obj, loc) {
+  // 0-based inclusive row/column numbers.
   obj.source = {
-    line: {
-      start: loc.first_line,
-      end: loc.last_line
+    row: {
+      start: loc.first_line - 1,
+      end: loc.last_line - 1
     },
-    col: {
-      start: loc.first_column + 1,
-      end: loc.last_column
+    column: {
+      start: loc.first_column,
+      end: loc.last_column - 1
     },
     start: loc.range[0],
     end: loc.range[1]
@@ -664,18 +665,26 @@ case 11:return 64;
 break;
 case 12:/* Skip whitespace. */
 break;
-case 13:return 38;
+case 13:char = '\\'; return 38;
 break;
-case 14:return 37;
+case 14:char = '\r'; return 38;
 break;
-case 15:return 5;
+case 15:char = '\n'; return 38;
 break;
-case 16:return yy_.yytext[0];
+case 16:char = '\t'; return 38;
+break;
+case 17:char = yy_.yytext[1]; return 38;
+break;
+case 18:return 37;
+break;
+case 19:return 5;
+break;
+case 20:return yy_.yytext[0];
 break;
 }
 },
-rules: [/^(?:\{)/,/^(?:[^}]+)/,/^(?:\})/,/^(?:")/,/^(?:\\")/,/^(?:\\\\)/,/^(?:\\r)/,/^(?:\\n)/,/^(?:\\t)/,/^(?:")/,/^(?:.)/,/^(?:[A-Za-z]+)/,/^(?:\s+)/,/^(?:'.)/,/^(?:[0-9]+)/,/^(?:$)/,/^(?:.)/],
-conditions: {"string":{"rules":[4,5,6,7,8,9,10],"inclusive":false},"comment":{"rules":[1,2],"inclusive":false},"INITIAL":{"rules":[0,3,11,12,13,14,15,16],"inclusive":true}}
+rules: [/^(?:\{)/,/^(?:[^}]+)/,/^(?:\})/,/^(?:")/,/^(?:\\")/,/^(?:\\\\)/,/^(?:\\r)/,/^(?:\\n)/,/^(?:\\t)/,/^(?:")/,/^(?:.|\n)/,/^(?:[A-Za-z]+)/,/^(?:\s+)/,/^(?:'\\\\)/,/^(?:'\\r)/,/^(?:'\\n)/,/^(?:'\\t)/,/^(?:'(.|\n))/,/^(?:[0-9]+)/,/^(?:$)/,/^(?:.)/],
+conditions: {"string":{"rules":[4,5,6,7,8,9,10],"inclusive":false},"comment":{"rules":[1,2],"inclusive":false},"INITIAL":{"rules":[0,3,11,12,13,14,15,16,17,18,19,20],"inclusive":true}}
 };
 return lexer;
 })();
@@ -689,9 +698,9 @@ return new Parser;
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-exports.parser = parser;
-exports.Parser = parser.Parser;
-exports.parse = function () { return parser.parse.apply(parser, arguments); };
+exports.parser = parserTest;
+exports.Parser = parserTest.Parser;
+exports.parse = function () { return parserTest.parse.apply(parserTest, arguments); };
 exports.main = function commonjsMain(args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');
