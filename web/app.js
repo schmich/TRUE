@@ -5,6 +5,8 @@ var browserify = require('browserify');
 var jisonify = require('jisonify');
 var Stream = require('stream');
 var fs = require('fs');
+var concat = require('concat-stream');
+var crypto = require('crypto');
 
 var app = express();
 
@@ -19,14 +21,16 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
 
+function isDevelopment() {
+  return app.get('env') == 'development';
+}
+
 // Development only.
-if ('development' == app.get('env')) {
+if (isDevelopment()) {
   app.use(express.errorHandler());
 }
 
-app.get('/js/bundle.js', function(req, res) {
-  res.header('Content-Type', 'application/javascript');
-
+function generateBundle(hashes, callback) {
   var builder = browserify({ basedir: './js/', extensions: ['.jison'] });
   builder.transform(jisonify);
 
@@ -35,12 +39,58 @@ app.get('/js/bundle.js', function(req, res) {
       var path = './js/' + files[i];
       var stat = fs.statSync(path);
       if (path.match(/\.js$/) && !path.match(/test/) && !stat.isDirectory()) {
+        hashes[files[i]] = crypto.createHash('md5').update(fs.readFileSync(path)).digest('hex');
         builder.add('./' + files[i]);
       }
     }
 
-    builder.bundle().pipe(res);
+    var write = concat(callback);
+
+    bundle = builder.bundle();
+    bundle.pipe(write);
   });
+}
+
+var bundleCache = null;
+var bundleHashes = {};
+app.get('/js/bundle.js', function(req, res) {
+  res.header('Content-Type', 'application/javascript');
+
+  if (!bundleCache) {
+    generateBundle(bundleHashes, function(data) {
+      bundleCache = data;
+      res.send(data);
+    });
+  } else {
+    if (!isDevelopment()) {
+      res.send(bundleCache);
+    } else {
+      fs.readdir('./js', function(err, files) {
+        var changed = false;
+        for (var i = 0; i < files.length; ++i) {
+          var path = './js/' + files[i];
+          var stat = fs.statSync(path);
+          if (path.match(/\.js$/) && !path.match(/test/) && !stat.isDirectory()) {
+            var oldHash = bundleHashes[files[i]];
+            var hash = crypto.createHash('md5').update(fs.readFileSync(path)).digest('hex');
+            if (hash != oldHash) {
+              bundleHashes[files[i]] = hash;
+              changed = true;
+            }
+          }
+        }
+
+        if (changed) {
+          generateBundle(bundleHashes, function(data) {
+            bundleCache = data;
+            res.send(data);
+          });
+        } else {
+          res.send(bundleCache);
+        }
+      });
+    }
+  }
 });
 
 app.get('/', function(req, res) {
