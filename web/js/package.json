@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "urlsafe-base64": "*",
-    "angular": "~1.2.2"
+    "angular": "~1.2.2",
+    "jquery": "~2.1.0-beta3"
   }
 }
