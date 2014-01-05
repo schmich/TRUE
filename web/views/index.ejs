@@ -10,6 +10,7 @@
   <script src="/js/lib/ace/ace.js" type="text/javascript"></script>
   <script src="/js/app.js" type="text/javascript"></script>
   <script src="/js/filters.js" type="text/javascript"></script>
+  <script src="/js/script-service.js" type="text/javascript"></script>
   <script src="/js/script-controller.js" type="text/javascript"></script>
   <script src="/js/examples-controller.js" type="text/javascript"></script>
   <script src="/js/true.js" type="text/javascript"></script>
@@ -48,7 +49,7 @@
       </div>
     </div>
     <div class="control">
-      <input id="input" type="text" ng-disabled="debugging" value="<%= input || '' %>" placeholder="Input" />
+      <input id="input" type="text" ng-disabled="debugging" ng-model="scriptService.input" value="<%= input || '' %>" placeholder="Input" />
       <button id="run" ng-if="!debugging" ng-click="runScript()">Run</button>
       <button id="stop" ng-if="debugging" ng-click="stopScript()">Stop</button>
       <button id="debug" ng-if="!debugging" ng-click="debugScript()">Debug</button>

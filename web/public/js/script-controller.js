@@ -1,20 +1,28 @@
 var aceRange = ace.require('ace/range').Range;
 
-function ScriptCtrl($scope) {
-  $scope.script = '';
+function ScriptCtrl($scope, scriptService) {
+  $scope.scriptService = scriptService;
+
   $scope.output = '';
   $scope.error = null;
   $scope.stack = [];
   $scope.vars = {};
 
-  $scope.exception = false;
   $scope.debugging = false;
+  $scope.exception = false;
   $scope.halted = false;
-  $scope.stepper = null;
   $scope.command = null;
 
   var editor = ace.edit('edit-script');
   editor.setOption('highlightActiveLine', false);
+
+  editor.getSession().getDocument().on('change', function(e) {
+    scriptService.script = editor.getSession().getDocument().getValue();
+  });
+
+  if (scriptService.script != null) {
+    editor.getSession().getDocument().setValue(scriptService.script);
+  }
 
   $(window).on('keydown', function(e) {
     if (e.keyCode == 27 /* Escape */) {
@@ -61,7 +69,6 @@ function ScriptCtrl($scope) {
 
   function compileScript() {
     var script = editor.getSession().getDocument().getValue();
-    $scope.script = script;
 
     var env = new $t.Env();
     env.put = function(s) {
@@ -190,7 +197,6 @@ function ScriptCtrl($scope) {
   };
 
   function stopScript() {
-    $scope.script = '';
     $scope.exception = false;
     $scope.debugging = false;
     $scope.halted = false;
