@@ -1,6 +1,9 @@
+var base64 = require('urlsafe-base64');
 var aceRange = ace.require('ace/range').Range;
+var parser = require('./parser').parser;
+var $t = require('./true');
 
-function ScriptCtrl($scope, scriptService) {
+window.ScriptCtrl = function($scope, scriptService) {
   $scope.scriptService = scriptService;
 
   $scope.output = '';
@@ -13,16 +16,31 @@ function ScriptCtrl($scope, scriptService) {
   $scope.halted = false;
   $scope.command = null;
 
+  $scope.encodedScript = '';
+  $scope.encodedInput = '';
+
   var editor = ace.edit('edit-script');
   editor.setOption('highlightActiveLine', false);
-
-  editor.getSession().getDocument().on('change', function(e) {
-    scriptService.script = editor.getSession().getDocument().getValue();
-  });
 
   if (scriptService.script != null) {
     editor.getSession().getDocument().setValue(scriptService.script);
   }
+
+  $scope.$watch('scriptService.input', function(input) {
+    if (input != null)
+      $scope.encodedInput = base64.encode(new Buffer(input));
+  });
+
+  $scope.$watch('scriptService.script', function(script) {
+    if (script != null)
+      $scope.encodedScript = base64.encode(new Buffer(script));
+  });
+
+  editor.getSession().getDocument().on('change', function(e) {
+    $scope.$apply(function() {
+      scriptService.script = editor.getSession().getDocument().getValue();
+    });
+  });
 
   $(window).on('keydown', function(e) {
     if (e.keyCode == 27 /* Escape */) {
@@ -202,7 +220,7 @@ function ScriptCtrl($scope, scriptService) {
     $scope.halted = false;
     $scope.stepper = null;
     $scope.command = null;
-    setTimeout(function() { $('#edit-script').focus(); });
+    setTimeout(function() { editor.focus(); });
   }
 
   $scope.stopScript = function() {

@@ -1,7 +1,13 @@
-$app = angular.module('TRUE', []);
+require('angular/lib/angular.min');
 
-$app.run(function($rootScope) {
+var app = angular.module('TRUE', [], function($locationProvider) {
+  $locationProvider.html5Mode(true);
+});
+
+app.run(function($rootScope) {
   window.onbeforeunload = function() {
     $rootScope.$broadcast('saveState');
   };
 });
+
+module.exports = app;

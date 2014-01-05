@@ -577,4 +577,4 @@ var exp = {
   },
 };
 
-$t = exp;
+module.exports = exp;

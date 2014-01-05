@@ -1,4 +1,5 @@
 %{
+  var $t = require('./true');
   var string = '';
 %}
 

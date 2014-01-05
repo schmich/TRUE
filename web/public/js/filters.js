@@ -1,16 +1,18 @@
-$app.filter('toString', function() {
+var app = require('./app');
+
+app.filter('toString', function() {
   return function(input) {
     return input.toString();
   };
 })
 
-$app.filter('reverse', function() {
+app.filter('reverse', function() {
   return function(items) {
     return items.slice().reverse();
   };
 });
 
-$app.filter('empty', function() {
+app.filter('empty', function() {
   return function(input) {
     return $.isEmptyObject(input);
   };

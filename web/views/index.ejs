@@ -5,16 +5,9 @@
   <link rel="stylesheet" href="/css/normalize.css" />
   <link rel="stylesheet" href="/css/style.css" />
   <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
-  <script src="/js/lib/jquery.min.js" type="text/javascript"></script>
-  <script src="/js/lib/angular.min.js" type="text/javascript"></script>
   <script src="/js/lib/ace/ace.js" type="text/javascript"></script>
-  <script src="/js/app.js" type="text/javascript"></script>
-  <script src="/js/filters.js" type="text/javascript"></script>
-  <script src="/js/script-service.js" type="text/javascript"></script>
-  <script src="/js/script-controller.js" type="text/javascript"></script>
-  <script src="/js/examples-controller.js" type="text/javascript"></script>
-  <script src="/js/true.js" type="text/javascript"></script>
-  <script src="/js/parser.js" type="text/javascript"></script>
+  <script src="/js/lib/jquery.min.js" type="text/javascript"></script>
+  <script src="/js/dist.js" type="text/javascript"></script>
 </head>
 <body ng-app="TRUE" ng-controller="ScriptCtrl">
 <div class="header group">
@@ -57,6 +50,7 @@
       <button id="go" ng-if="debugging" ng-disabled="exception || halted" ng-click="resumeScript();">Go</button>
       <div class="program-halted" ng-show="halted">Complete</div>
       <div class="program-exception" ng-show="exception">Error</div>
+      <a ng-href="/?s={{encodedScript}}&i={{encodedInput}}">Permalink</a>
     </div>
     <div ng-if="error != null" id="error-message"><span class="dismiss" ng-click="hideError()">&times;</span>{{error}}</div>
     <div id="output" ng-class="{ empty: !output }">{{output || 'Output'}}</div>

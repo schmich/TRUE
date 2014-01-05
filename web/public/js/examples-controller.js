@@ -1,4 +1,4 @@
-function ExamplesCtrl($scope, $http) {
+window.ExamplesCtrl = function($scope, $http) {
   $scope.examples = null;
 
   $http.get('/examples')

@@ -1,6 +1,6 @@
 var assert = require('assert');
-var parser = require('./parser-test.js').parser;
-require('./true.js');
+var parser = require('./parser').parser;
+var $t = require('./true');
 
 function run(script, input, runFunc) {
   var env = new $t.Env();
