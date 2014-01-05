@@ -1,3 +1,7 @@
+%{
+  var string = '';
+%}
+
 %lex
 
 %options ranges
@@ -17,16 +21,20 @@
 <string>\\r           string += '\r';
 <string>\\n           string += '\n';
 <string>\\t           string += '\t';
-<string>\"            this.popState(); return 'STRING_LITERAL';
+<string>\"            %{
+                        this.popState();
+                        yytext = string;
+                        return 'STRING_LITERAL';
+                      %}
 <string>.|\n          string += yytext;
 
 [A-Za-z]+             return 'VAR';
 \s+                   /* Skip whitespace. */
-\'\\\\                char = '\\'; return 'CHAR_LITERAL';
-\'\\r                 char = '\r'; return 'CHAR_LITERAL';
-\'\\n                 char = '\n'; return 'CHAR_LITERAL';
-\'\\t                 char = '\t'; return 'CHAR_LITERAL';
-\'(.|\n)              char = yytext[1]; return 'CHAR_LITERAL';
+\'\\\\                yytext = '\\'; return 'CHAR_LITERAL';
+\'\\r                 yytext = '\r'; return 'CHAR_LITERAL';
+\'\\n                 yytext = '\n'; return 'CHAR_LITERAL';
+\'\\t                 yytext = '\t'; return 'CHAR_LITERAL';
+\'(.|\n)              yytext = yytext[1]; return 'CHAR_LITERAL';
 [0-9]+                return 'INT_LITERAL';
 <<EOF>>               return 'EOF';
 .                     return yytext[0];
@@ -89,7 +97,7 @@ pushInt: INT_LITERAL
   { $$ = annotate(new $t.PushInt(toInt($1)), @$); };
 
 pushChar: CHAR_LITERAL
-  { $$ = annotate(new $t.PushChar(char), @$); };
+  { $$ = annotate(new $t.PushChar($1), @$); };
 
 add: '+'
   { $$ = annotate(new $t.Add(), @$); };
@@ -143,7 +151,7 @@ putChar: ','
   { $$ = annotate(new $t.PutChar(), @$); };
 
 putString: STRING_LITERAL
-  { $$ = annotate(new $t.PutString(string), @$); };
+  { $$ = annotate(new $t.PutString($1), @$); };
 
 getChar: '^'
   { $$ = annotate(new $t.GetChar(), @$); };

@@ -92,7 +92,7 @@ case 5: this.$ = annotate(new $t.Block([$$[$0]]), this._$);
 break;
 case 35: this.$ = annotate(new $t.PushInt(toInt($$[$0])), this._$); 
 break;
-case 36: this.$ = annotate(new $t.PushChar(char), this._$); 
+case 36: this.$ = annotate(new $t.PushChar($$[$0]), this._$); 
 break;
 case 37: this.$ = annotate(new $t.Add(), this._$); 
 break;
@@ -128,7 +128,7 @@ case 52: this.$ = annotate(new $t.PutInt(), this._$);
 break;
 case 53: this.$ = annotate(new $t.PutChar(), this._$); 
 break;
-case 54: this.$ = annotate(new $t.PutString(string), this._$); 
+case 54: this.$ = annotate(new $t.PutString($$[$0]), this._$); 
 break;
 case 55: this.$ = annotate(new $t.GetChar(), this._$); 
 break;
@@ -289,6 +289,8 @@ parse: function parse(input) {
     }
     return true;
 }};
+
+  var string = '';
 
 
 function toInt(o) {
@@ -657,7 +659,11 @@ case 7:string += '\n';
 break;
 case 8:string += '\t';
 break;
-case 9:this.popState(); return 56;
+case 9:
+                        this.popState();
+                        yy_.yytext = string;
+                        return 56;
+                      
 break;
 case 10:string += yy_.yytext;
 break;
@@ -665,15 +671,15 @@ case 11:return 64;
 break;
 case 12:/* Skip whitespace. */
 break;
-case 13:char = '\\'; return 38;
+case 13:yy_.yytext = '\\'; return 38;
 break;
-case 14:char = '\r'; return 38;
+case 14:yy_.yytext = '\r'; return 38;
 break;
-case 15:char = '\n'; return 38;
+case 15:yy_.yytext = '\n'; return 38;
 break;
-case 16:char = '\t'; return 38;
+case 16:yy_.yytext = '\t'; return 38;
 break;
-case 17:char = yy_.yytext[1]; return 38;
+case 17:yy_.yytext = yy_.yytext[1]; return 38;
 break;
 case 18:return 37;
 break;
