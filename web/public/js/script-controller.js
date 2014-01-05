@@ -51,7 +51,7 @@ function ScriptCtrl($scope) {
 
     var program = null;
     var valid = tryRun(function() {
-      program = $parser.parse(script);
+      program = parser.parse(script);
     });
 
     return [valid, program, env];
@@ -64,11 +64,7 @@ function ScriptCtrl($scope) {
       runner();
     } catch(e) {
       error = true;
-      if (e instanceof $parser.SyntaxError) {
-        $scope.error = e.message + ' At line ' + e.line + ', column ' + e.column + '.';
-      } else {
-        $scope.error = e.message;
-      }
+      $scope.error = e.message;
     }
 
     return !error;

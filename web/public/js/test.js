@@ -1,34 +1,40 @@
 var assert = require('assert');
-var parser = require('./parser.js');
-var t = require('./true.js');
+var parser = require('./parser-test.js').parser;
+require('./true.js');
 
-function execRun(script) {
+function run(script, input, runFunc) {
   var env = new $t.Env();
   var results = {
-    s: env.stack,
+    stack: env.stack,
     out: ''
   };
   env.put = function(s) {
     results.out += s;
   };
-  var program = $parser.parse(script);
-  program.exec(env);
+  var pos = 0;
+  env.get = function() {
+    if (pos < input.length) {
+      return input.charCodeAt(pos++);
+    } else {
+      return -1;
+    }
+  };
+  var program = parser.parse(script);
+  runFunc(program, env);
   return results;
 }
 
-function stepRun(script) {
-  var env = new $t.Env();
-  var results = {
-    s: env.stack,
-    out: ''
-  };
-  env.put = function(s) {
-    results.out += s;
-  };
-  var program = $parser.parse(script);
-  var stepper = program.stepper(env);
-  while (stepper.step()) { }
-  return results;
+function execRun(script, input) {
+  return run(script, input, function(program, env) {
+    program.exec(env);
+  });
+}
+
+function stepRun(script, input) {
+  return run(script, input, function(program, env) {
+    var stepper = program.stepper(env);
+    while (stepper.step()) { }
+  });
 }
 
 function arrEq(expected, actual) {
@@ -37,18 +43,19 @@ function arrEq(expected, actual) {
     assert.equal(expected[i], actual[i]);
 }
 
-var se = $parser.SyntaxError;
+var se = Error;
 var re = $t.RuntimeError;
 
 var tests = [
   ['', []],
-  //[' ', []],
-  //[' \n\t', []],
+  [' ', []],
+  [' \n\t', []],
   ['42', [42]],
   ['4{c}', [4]],
   ['{c}4', [4]],
   ['{c}4{c}', [4]],
-  //['{c}', []],
+  ['{c}', []],
+  ['{a} {b}', []],
   ['1 2 3', [1, 2, 3]],
   ["'a", [97]],
   ['1 2+', [3]],
@@ -87,7 +94,9 @@ var tests = [
   ["'a,", [], 'a'],
   ['97,', [], 'a'],
   ['4 "ok"', [4], 'ok'],
-  // getChar
+  [['^', 'a'], [97]],
+  [['^^,,', 'ab'], [], 'ba'],
+  [['^', ''], [-1]],
   // varAssign
   // varRead
   // pushSubroutine
@@ -190,7 +199,8 @@ var tests = [
   ["20 9[1-$][\\$@$@$@$@\\/*=[1-$$[%\\1-$@]?0=[\\$.' ,\\]?]?]#%%", [], '19 17 13 11 7 5 3 2 '],
   ['[$1=$[\\%1\\]?~[$1-f;!*]?]f:6f;!.', [], '720'],
   ["[\"'[,34,$!34,'],!\"]'[,34,$!34,'],!", [], "[\"'[,34,$!34,'],!\"]'[,34,$!34,'],!"],
-  ['[[$][1-\\1+\\]#%]add:5 7add;!', [12]]
+  ['[[$][1-\\1+\\]#%]add:5 7add;!', [12]],
+  [['0[^$~][]#%[$][,]#%', 'reverse'], [], 'esrever']
 ];
 
 describe('TRUE', function() {
@@ -202,14 +212,23 @@ describe('TRUE', function() {
       var test = tests[i];
 
       (function(test, runner) {
-        var script = test[0];
+        var input = test[0];
+        var script;
+        if (input instanceof Array) {
+          script = input[0];
+          input = input[1];
+        } else {
+          script = input;
+          input = '';
+        }
+
         it('script: ' + script, function() {
           var expectedResult = test[1];
           if (expectedResult instanceof Array) {
             var expectedOutput = test[2];
 
-            var r = runner(script);
-            arrEq(expectedResult, r.s);
+            var r = runner(script, input);
+            arrEq(expectedResult, r.stack);
 
             if (expectedOutput !== undefined) {
               assert.equal(expectedOutput, r.out);

@@ -107,9 +107,13 @@ var exp = {
         }
       }
     };
+
+    this.toString = function() {
+      return startBlock.toString();
+    };
   },
 
-  BinaryOp: function(op) {
+  BinaryOp: function(str, op) {
     this.exec = function(env) {
       ensureStack(env, 2);
 
@@ -119,9 +123,13 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return str;
+    };
   },
 
-  UnaryOp: function(op) {
+  UnaryOp: function(str, op) {
     this.exec = function(env) {
       ensureStack(env, 1);
 
@@ -130,26 +138,38 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return str;
+    };
   },
 
-  PushLiteral: function(value) {
+  PushInt: function(value) {
     this.exec = function(env) {
       env.stack.push(value);
+    };
+
+    this.toString = function() {
+      return value + '';
     };
 
     this.step = this.exec;
   },
 
-  PushInt: function(value) {
-    return new exp.PushLiteral(value);
-  },
-
   PushChar: function(value) {
-    return new exp.PushLiteral(value.charCodeAt(0));
+    this.exec = function(env) {
+      env.stack.push(value.charCodeAt(0));
+    };
+
+    this.toString = function() {
+      return "'" + value;
+    };
+
+    this.step = this.exec;
   },
 
   Add: function() {
-    return new exp.BinaryOp(function(x, y) {
+    return new exp.BinaryOp('+', function(x, y) {
       ensureInt(x);
       ensureInt(y);
 
@@ -158,7 +178,7 @@ var exp = {
   },
 
   Subtract: function() {
-    return new exp.BinaryOp(function(x, y) {
+    return new exp.BinaryOp('-', function(x, y) {
       ensureInt(x);
       ensureInt(y);
 
@@ -167,7 +187,7 @@ var exp = {
   },
 
   Multiply: function() {
-    return new exp.BinaryOp(function(x, y) {
+    return new exp.BinaryOp('*', function(x, y) {
       ensureInt(x);
       ensureInt(y);
 
@@ -176,7 +196,7 @@ var exp = {
   },
 
   Quotient: function() {
-    return new exp.BinaryOp(function(x, y) {
+    return new exp.BinaryOp('/', function(x, y) {
       ensureInt(x);
       ensureInt(y);
 
@@ -188,7 +208,7 @@ var exp = {
   },
 
   Negate: function() {
-    return new exp.UnaryOp(function(x) {
+    return new exp.UnaryOp('_', function(x) {
       ensureInt(x);
 
       return -x;
@@ -196,7 +216,7 @@ var exp = {
   },
 
   Equal: function() {
-    return new exp.BinaryOp(function(x, y) {
+    return new exp.BinaryOp('=', function(x, y) {
       ensureInt(x);
       ensureInt(y);
 
@@ -205,7 +225,7 @@ var exp = {
   },
 
   Greater: function() {
-    return new exp.BinaryOp(function(x, y) {
+    return new exp.BinaryOp('>', function(x, y) {
       ensureInt(x);
       ensureInt(y);
 
@@ -214,7 +234,7 @@ var exp = {
   },
 
   And: function() {
-    return new exp.BinaryOp(function(x, y) {
+    return new exp.BinaryOp('&', function(x, y) {
       ensureInt(x);
       ensureInt(y);
 
@@ -223,7 +243,7 @@ var exp = {
   },
 
   Or: function() {
-    return new exp.BinaryOp(function(x, y) {
+    return new exp.BinaryOp('|', function(x, y) {
       ensureInt(x);
       ensureInt(y);
 
@@ -232,7 +252,7 @@ var exp = {
   },
 
   Not: function() {
-    return new exp.UnaryOp(function(x) {
+    return new exp.UnaryOp('~', function(x) {
       ensureInt(x);
 
       return ~x;
@@ -248,6 +268,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return '$';
+    };
   },
 
   Delete: function() {
@@ -258,6 +282,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return '%';
+    };
   },
 
   Swap: function() {
@@ -271,6 +299,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return '\\';
+    };
   },
 
   Rotate: function() {
@@ -283,6 +315,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return '@';
+    };
   },
 
   Block: function(commands) {
@@ -294,11 +330,20 @@ var exp = {
       } 
     };
 
-    this.toString = function() {
-      return '[' + this.source.text + ']';
-    };
-
     this.step = this.exec;
+
+    this.toString = function() {
+      var s = '';
+      for (var i = 0; i < commands.length; ++i) {
+        s += commands[i].toString();
+
+        // Add space between consecutive integers.
+        if ((commands[i] instanceof exp.PushInt) && (commands[i + 1] instanceof exp.PushInt)) {
+          s += ' ';
+        }
+      }
+      return '[' + s + ']';
+    };
   },
 
   Pick: function() {
@@ -314,6 +359,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return 'ø';
+    };
   },
 
   PutInt: function() {
@@ -323,6 +372,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return '.';
+    };
   },
 
   PutChar: function() {
@@ -332,6 +385,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return ',';
+    };
   },
 
   // TODO: Support escaped quotes.
@@ -341,6 +398,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return '"' + string + '"';
+    };
   },
 
   GetChar: function() {
@@ -349,6 +410,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return '^';
+    };
   },
 
   AssignVar: function(name) {
@@ -360,6 +425,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return name + ':';
+    };
   },
 
   ReadVar: function(name) {
@@ -372,6 +441,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return name + ';';
+    };
   },
 
   PushSubroutine: function(block) {
@@ -380,6 +453,10 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return block.toString();
+    };
   },
 
   RunSubroutine: function() {
@@ -391,6 +468,10 @@ var exp = {
     this.step = function(env) {
       var sub = env.stack.popBlock();
       env.addBlock(sub);
+    };
+
+    this.toString = function() {
+      return '!';
     };
   },
 
@@ -411,6 +492,10 @@ var exp = {
       /* Implicit int -> bool conversion. */
       if (condition)
         env.addBlock(sub);
+    };
+
+    this.toString = function() {
+      return '?';
     };
   },
 
@@ -436,6 +521,10 @@ var exp = {
 
       env.addCommand(new exp.WhileCheck(condition, body, this));
       env.addBlock(condition);
+    };
+
+    this.toString = function() {
+      return '#';
     };
   },
 
@@ -473,17 +562,19 @@ var exp = {
     };
 
     this.step = this.exec;
+
+    this.toString = function() {
+      return '∆';
+    };
   },
 
   Flush: function() {
     this.exec = function(env) { };
     this.step = this.exec;
+    this.toString = function() {
+      return 'ß';
+    };
   },
-
-  Assembly: function() {
-    this.exec = function(env) { };
-    this.step = this.exec;
-  }
 };
 
 $t = exp;

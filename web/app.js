@@ -52,7 +52,7 @@ app.get('/examples', function(req, res) {
     },
     {
       name: 'strrev',
-      script: '0[^$~][]#%[$][,]#',
+      script: '0[^$~][]#%[$][,]#%',
       input: 'hello'
     },
     {

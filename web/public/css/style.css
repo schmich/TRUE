@@ -7,7 +7,7 @@
 a, a:visited {
   font-family: 'Open Sans';
   text-decoration: none;
-  color: #bbb;
+  color: #ccc;
 }
 a:hover {
   color: #59f;
@@ -24,7 +24,7 @@ h2 {
   margin: 0;
   padding: 0;
   font: 22px 'Open Sans';
-  color: #bbb;
+  color: #ccc;
   float: left;
 }
 .header nav {
@@ -47,13 +47,13 @@ h2 {
 }
 .program-halted, .program-exception {
   color: #353;
-  font: 24px 'Open Sans';
+  font: 22px 'Open Sans';
   background: #8e3;
   line-height: 40px;
   height: 100%;
   vertical-align: top;
   display: inline-block;
-  padding: 0 22px;
+  padding: 0 25px;
 }
 .program-exception {
   color: #755;

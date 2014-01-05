@@ -21,23 +21,15 @@ $app.filter('highlight', function($sce) {
     if (!command)
       return $sce.trustAsHtml(html);
 
-    var active = command.source;
-
-    // This is really inefficient. We could cache this info somewhere.
-    var lines = src.split("\n");
-    var index = 0;
-    for (var i = 0; i < active.line - 1; ++i) {
-      index += lines[i].length + 1;
-    }
-
-    index += active.column;
+    var start = command.source.start;
+    var end = command.source.end;
 
     // TODO: Escape HTML.
-    var html = src.substr(0, index - 1) 
+    var html = src.substr(0, start) 
              + '<span class="active-command">'
-             + active.text
+             + src.substr(start, end - start)
              + '</span>'
-             + src.substr(index + active.text.length - 1);
+             + src.substr(end);
 
     return $sce.trustAsHtml(html);
   };
