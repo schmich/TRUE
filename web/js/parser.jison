@@ -1,8 +1,3 @@
-%{
-  var $t = require('./true');
-  var string = '';
-%}
-
 %lex
 
 %options ranges
@@ -46,19 +41,19 @@
 %%
 
 program: opt_block EOF
-  { return new $t.Program($1); };
+  { return new yy.Program($1); };
 
 opt_block
   : block
   | /* Empty. */
-    { $$ = annotate(new $t.Block([]), @$); }
+    { $$ = yy.annotate(new yy.Block([]), @$); }
   ;
 
 block
   : block command
     { $1.commands.push($2); }
   | command
-    { $$ = annotate(new $t.Block([$1]), @$); }
+    { $$ = yy.annotate(new yy.Block([$1]), @$); }
   ;
 
 command
@@ -94,111 +89,90 @@ command
   ;
 
 pushInt: INT_LITERAL
-  { $$ = annotate(new $t.PushInt(toInt($1)), @$); };
+  { $$ = yy.annotate(new yy.PushInt(Number($1)), @$); };
 
 pushChar: CHAR_LITERAL
-  { $$ = annotate(new $t.PushChar($1), @$); };
+  { $$ = yy.annotate(new yy.PushChar($1), @$); };
 
 add: '+'
-  { $$ = annotate(new $t.Add(), @$); };
+  { $$ = yy.annotate(new yy.Add(), @$); };
 
 subtract: '-'
-  { $$ = annotate(new $t.Subtract(), @$); };
+  { $$ = yy.annotate(new yy.Subtract(), @$); };
 
 multiply: '*'
-  { $$ = annotate(new $t.Multiply(), @$); };
+  { $$ = yy.annotate(new yy.Multiply(), @$); };
 
 quotient: '/'
-  { $$ = annotate(new $t.Quotient(), @$); };
+  { $$ = yy.annotate(new yy.Quotient(), @$); };
 
 negate: '_'
-  { $$ = annotate(new $t.Negate(), @$); };
+  { $$ = yy.annotate(new yy.Negate(), @$); };
 
 equal: '='
-  { $$ = annotate(new $t.Equal(), @$); };
+  { $$ = yy.annotate(new yy.Equal(), @$); };
 
 greater: '>'
-  { $$ = annotate(new $t.Greater(), @$); };
+  { $$ = yy.annotate(new yy.Greater(), @$); };
 
 and: '&'
-  { $$ = annotate(new $t.And(), @$); };
+  { $$ = yy.annotate(new yy.And(), @$); };
 
 or: '|'
-  { $$ = annotate(new $t.Or(), @$); };
+  { $$ = yy.annotate(new yy.Or(), @$); };
 
 not: '~'
-  { $$ = annotate(new $t.Not(), @$); };
+  { $$ = yy.annotate(new yy.Not(), @$); };
 
 duplicate: '$'
-  { $$ = annotate(new $t.Duplicate(), @$); };
+  { $$ = yy.annotate(new yy.Duplicate(), @$); };
 
 delete: '%'
-  { $$ = annotate(new $t.Delete(), @$); };
+  { $$ = yy.annotate(new yy.Delete(), @$); };
 
 swap: '\'
-  { $$ = annotate(new $t.Swap(), @$); };
+  { $$ = yy.annotate(new yy.Swap(), @$); };
 
 rotate: '@'
-  { $$ = annotate(new $t.Rotate(), @$); };
+  { $$ = yy.annotate(new yy.Rotate(), @$); };
 
 pick: 'ø'
-  { $$ = annotate(new $t.Pick(), @$); };
+  { $$ = yy.annotate(new yy.Pick(), @$); };
 
 putInt: '.'
-  { $$ = annotate(new $t.PutInt(), @$); };
+  { $$ = yy.annotate(new yy.PutInt(), @$); };
 
 putChar: ','
-  { $$ = annotate(new $t.PutChar(), @$); };
+  { $$ = yy.annotate(new yy.PutChar(), @$); };
 
 putString: STRING_LITERAL
-  { $$ = annotate(new $t.PutString($1), @$); };
+  { $$ = yy.annotate(new yy.PutString($1), @$); };
 
 getChar: '^'
-  { $$ = annotate(new $t.GetChar(), @$); };
+  { $$ = yy.annotate(new yy.GetChar(), @$); };
 
 pushSubroutine: '[' opt_block ']'
-  { $$ = annotate(new $t.PushSubroutine($2), @$); }; 
+  { $$ = yy.annotate(new yy.PushSubroutine($2), @$); }; 
 
 runSubroutine: '!'
-  { $$ = annotate(new $t.RunSubroutine(), @$); };
+  { $$ = yy.annotate(new yy.RunSubroutine(), @$); };
 
 if: '?'
-  { $$ = annotate(new $t.If(), @$); };
+  { $$ = yy.annotate(new yy.If(), @$); };
 
 while: '#'
-  { $$ = annotate(new $t.While(), @$); };
+  { $$ = yy.annotate(new yy.While(), @$); };
 
 flush: 'ß'
-  { $$ = annotate(new $t.Flush(), @$); };
+  { $$ = yy.annotate(new yy.Flush(), @$); };
 
 varAssign: VAR ':'
-  { $$ = annotate(new $t.AssignVar($1), @$); };
+  { $$ = yy.annotate(new yy.AssignVar($1), @$); };
 
 varRead: VAR ';'
-  { $$ = annotate(new $t.ReadVar($1), @$); };
+  { $$ = yy.annotate(new yy.ReadVar($1), @$); };
 
 random: '∆'
-  { $$ = annotate(new $t.Random(), @$); };
+  { $$ = yy.annotate(new yy.Random(), @$); };
 
 %%
-
-function toInt(o) {
-  return parseInt(o, 10);
-}
-
-function annotate(obj, loc) {
-  // 0-based inclusive row/column numbers.
-  obj.source = {
-    row: {
-      start: loc.first_line - 1,
-      end: loc.last_line - 1
-    },
-    column: {
-      start: loc.first_column,
-      end: loc.last_column - 1
-    },
-    start: loc.range[0],
-    end: loc.range[1]
-  };
-  return obj;
-}

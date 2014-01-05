@@ -1,7 +1,7 @@
 var base64 = require('urlsafe-base64');
 var aceRange = ace.require('ace/range').Range;
 var parser = require('./parser').parser;
-var $t = require('./true');
+var $t = parser.yy = require('./true');
 
 window.ScriptCtrl = function($scope, scriptService) {
   $scope.scriptService = scriptService;

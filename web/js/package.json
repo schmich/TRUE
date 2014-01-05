@@ -2,6 +2,9 @@
   "name": "true-web-js",
   "version": "0.0.1",
   "private": true,
+  "scripts": {
+    "test": "mocha test/test.js"
+  },
   "dependencies": {
     "urlsafe-base64": "*",
     "angular": "~1.2.2"

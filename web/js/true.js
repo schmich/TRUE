@@ -575,6 +575,23 @@ var exp = {
       return 'ß';
     };
   },
+
+  annotate: function(obj, loc) {
+    // 0-based inclusive row/column numbers.
+    obj.source = {
+      row: {
+        start: loc.first_line - 1,
+        end: loc.last_line - 1
+      },
+      column: {
+        start: loc.first_column,
+        end: loc.last_column - 1
+      },
+      start: loc.range[0],
+      end: loc.range[1]
+    };
+    return obj;
+  }
 };
 
 module.exports = exp;

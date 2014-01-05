@@ -1,7 +1,10 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
-var base64 = require('urlsafe-base64');
+var browserify = require('browserify');
+var jisonify = require('jisonify');
+var Stream = require('stream');
+var fs = require('fs');
 
 var app = express();
 
@@ -21,16 +24,27 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+app.get('/js/bundle.js', function(req, res) {
+  res.header('Content-Type', 'application/javascript');
+
+  var builder = browserify({ basedir: './js/', extensions: ['.jison'] });
+  builder.transform(jisonify);
+
+  fs.readdir('./js', function(err, files) {
+    for (var i = 0; i < files.length; ++i) {
+      var path = './js/' + files[i];
+      var stat = fs.statSync(path);
+      if (path.match(/\.js$/) && !path.match(/test/) && !stat.isDirectory()) {
+        builder.add('./' + files[i]);
+      }
+    }
+
+    builder.bundle().pipe(res);
+  });
+});
+
 app.get('/', function(req, res) {
-  var script = null;
-  if (req.query.s)
-    script = base64.decode(req.query.s);
-
-  var input = null;
-  if (req.query.i)
-    input = base64.decode(req.query.i);
-
-  res.render('index', { script: script, input: input });
+  res.render('index');
 });
 
 app.get('/examples', function(req, res) {

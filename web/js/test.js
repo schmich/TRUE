@@ -1,6 +1,9 @@
+var fs = require('fs');
+var contents = fs.readFileSync('./parser.jison', 'utf-8');
+var jison = require('jison');
+var parser = new jison.Parser(contents);
+var $t = parser.yy = require('./true');
 var assert = require('assert');
-var parser = require('./parser').parser;
-var $t = require('./true');
 
 function run(script, input, runFunc) {
   var env = new $t.Env();
