@@ -643,54 +643,52 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0:this.begin('comment');
 break;
-case 1:/* Skip comment characters. */
+case 1:this.popState();
 break;
-case 2:this.popState();
+case 2:this.begin('string'); string = '';
 break;
-case 3:this.begin('string'); string = '';
+case 3:string += '"';
 break;
-case 4:string += '"';
+case 4:string += '\\';
 break;
-case 5:string += '\\';
+case 5:string += '\r';
 break;
-case 6:string += '\r';
+case 6:string += '\n';
 break;
-case 7:string += '\n';
+case 7:string += '\t';
 break;
-case 8:string += '\t';
-break;
-case 9:
+case 8:
                         this.popState();
                         yy_.yytext = string;
                         return 56;
                       
 break;
-case 10:string += yy_.yytext;
+case 9:string += yy_.yytext;
 break;
-case 11:return 64;
+case 10:return 64;
 break;
-case 12:/* Skip whitespace. */
+case 11:/* Skip whitespace. */
 break;
-case 13:yy_.yytext = '\\'; return 38;
+case 12:yy_.yytext = '\\'; return 38;
 break;
-case 14:yy_.yytext = '\r'; return 38;
+case 13:yy_.yytext = '\r'; return 38;
 break;
-case 15:yy_.yytext = '\n'; return 38;
+case 14:yy_.yytext = '\n'; return 38;
 break;
-case 16:yy_.yytext = '\t'; return 38;
+case 15:yy_.yytext = '\t'; return 38;
 break;
-case 17:yy_.yytext = yy_.yytext[1]; return 38;
+case 16:yy_.yytext = yy_.yytext[1]; return 38;
 break;
-case 18:return 37;
+case 17:return 37;
 break;
-case 19:return 5;
+case 18:return 5;
 break;
-case 20:return yy_.yytext[0];
+case 19:return yy_.yytext[0];
 break;
 }
 },
-rules: [/^(?:\{)/,/^(?:[^}]+)/,/^(?:\})/,/^(?:")/,/^(?:\\")/,/^(?:\\\\)/,/^(?:\\r)/,/^(?:\\n)/,/^(?:\\t)/,/^(?:")/,/^(?:.|\n)/,/^(?:[A-Za-z]+)/,/^(?:\s+)/,/^(?:'\\\\)/,/^(?:'\\r)/,/^(?:'\\n)/,/^(?:'\\t)/,/^(?:'(.|\n))/,/^(?:[0-9]+)/,/^(?:$)/,/^(?:.)/],
-conditions: {"string":{"rules":[4,5,6,7,8,9,10],"inclusive":false},"comment":{"rules":[1,2],"inclusive":false},"INITIAL":{"rules":[0,3,11,12,13,14,15,16,17,18,19,20],"inclusive":true}}
+rules: [/^(?:\{)/,/^(?:[^}]+\})/,/^(?:")/,/^(?:\\")/,/^(?:\\\\)/,/^(?:\\r)/,/^(?:\\n)/,/^(?:\\t)/,/^(?:")/,/^(?:.|\n)/,/^(?:[A-Za-z]+)/,/^(?:\s+)/,/^(?:'\\\\)/,/^(?:'\\r)/,/^(?:'\\n)/,/^(?:'\\t)/,/^(?:'(.|\n))/,/^(?:[0-9]+)/,/^(?:$)/,/^(?:.)/],
+conditions: {"string":{"rules":[3,4,5,6,7,8,9],"inclusive":false},"comment":{"rules":[1],"inclusive":false},"INITIAL":{"rules":[0,2,10,11,12,13,14,15,16,17,18,19],"inclusive":true}}
 };
 return lexer;
 })();

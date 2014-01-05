@@ -12,8 +12,7 @@
 %%
 
 <INITIAL>\{           this.begin('comment');
-<comment>[^}]+        /* Skip comment characters. */
-<comment>\}           this.popState();
+<comment>[^}]+\}      this.popState();
 
 <INITIAL>\"           this.begin('string'); string = '';
 <string>\\\"          string += '"';
