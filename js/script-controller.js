@@ -122,10 +122,9 @@ window.ScriptCtrl = function($scope, scriptService) {
     if (!tryRun(run)) {
       $scope.command = $scope.stepper.next();
       $scope.exception = true;
-      return;
+    } else {
+      $scope.halted = true;
     }
-
-    $scope.halted = true;
   }
 
   $scope.stepScript = function() {

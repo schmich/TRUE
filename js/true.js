@@ -97,7 +97,7 @@ var exp = {
             var cmd = env.commands.shift();
             if (cmd !== undefined)
               cmd.step(env);
-          } while (cmd && cmd.pass);
+          } while (this.next() && this.next().pass);
 
           return cmd;
         },
@@ -528,19 +528,36 @@ var exp = {
     };
   },
 
-  WhileCheck: function(condition, body, whileCmd) {
+  WhileAgain: function(condition, body) {
+    this.step = function(env) {
+      var body = env.stack.popBlock();
+      var condition = env.stack.popBlock();
+
+      env.addCommand(new exp.WhileCheck(condition, body));
+      env.addBlock(condition);
+    };
+
+    this.pass = true;
+  },
+
+  WhileCheck: function(condition, body) {
+    var commands = condition.commands;
+    if (commands.length > 0) {
+      this.source = commands[commands.length - 1].source;
+    } else {
+      this.pass = true;
+    }
+
     this.step = function(env) {
       var result = env.stack.popInt();
 
       /* Implicit int -> bool conversion. */
       if (result) {
-        env.addCommand(whileCmd);
+        env.addCommand(new exp.WhileAgain(condition, body));
         env.addCommand(new exp.WhileRepeat(condition, body));
         env.addBlock(body);
       }
     };
-
-    this.pass = true;
   },
 
   WhileRepeat: function(condition, body) {
