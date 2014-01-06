@@ -26,7 +26,7 @@
   <form>
     <div id="editor">
       <div class="script-container" ng-class="{ debugging: debugging, exception: exception, halted: halted }">
-        <div id="edit-script"></div>
+        <div id="edit-script" ng-controller="EditCtrl"></div>
       </div>
       <div id="stack">
         <div class="title">Stack</div>
@@ -46,7 +46,7 @@
     <div class="control">
       <input id="input" type="text" ng-disabled="debugging" ng-model="scriptService.input" placeholder="Input" />
       <button id="run" class="action" ng-if="!debugging" ng-click="runScript()">Run</button>
-      <button id="stop" class="action" ng-if="debugging" ng-click="stopScript()">Stop</button>
+      <button id="stop" class="action" ng-if="debugging" ng-click="stopDebugging()">Stop</button>
       <button id="debug" class="action" ng-if="!debugging" ng-click="debugScript()">Debug</button>
       <button id="step" class="action" ng-if="debugging" ng-disabled="exception || halted" ng-click="stepScript()">Step</button>
       <button id="go" class="action" ng-if="debugging" ng-disabled="exception || halted" ng-click="resumeScript();">Go</button>

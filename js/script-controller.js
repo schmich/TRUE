@@ -1,5 +1,3 @@
-var ace = require('brace');
-var aceRange = ace.acequire('ace/range').Range;
 var parser = require('./parser').parser;
 var $t = parser.yy = require('./true');
 
@@ -16,9 +14,6 @@ window.ScriptCtrl = function($scope, scriptService) {
   $scope.halted = false;
   $scope.command = null;
 
-  var editor = ace.edit('edit-script');
-  editor.setOption('highlightActiveLine', false);
-
   if (scriptService.script == null) {
     scriptService.script = '"Hello, "[^$~][,]#"!"';
   }
@@ -27,20 +22,10 @@ window.ScriptCtrl = function($scope, scriptService) {
     scriptService.input = 'world';
   }
 
-  if (scriptService.script != null) {
-    editor.getSession().getDocument().setValue(scriptService.script);
-  }
-
-  editor.getSession().getDocument().on('change', function(e) {
-    $scope.$apply(function() {
-      scriptService.script = editor.getSession().getDocument().getValue();
-    });
-  });
-
   $(window).on('keydown', function(e) {
     if (e.keyCode == 27 /* Escape */) {
       $scope.$apply(function() {
-        stopScript();
+        $scope.stopDebugging();
       });
     }
   });
@@ -53,42 +38,15 @@ window.ScriptCtrl = function($scope, scriptService) {
     }
   });
 
-  var debugMarkerId = null;
-  $scope.$watch('command', function(command) {
-    if (!command)
-      return;
-
-    var range = new aceRange(
-      command.source.row.start,
-      command.source.column.start,
-      command.source.row.end,
-      command.source.column.end + 1
-    );
-
-    if (debugMarkerId !== null)
-      editor.getSession().removeMarker(debugMarkerId);
-
-    debugMarkerId = editor.getSession().addMarker(range, 'active-command', 'text');
-  });
-
-  $scope.$watch('debugging', function(debugging) {
-    editor.setReadOnly(debugging);
-
-    if (!debugging) {
-      editor.getSession().removeMarker(debugMarkerId);
-      debugMarkerId = null;
-    }
-  });
-
   function compileScript() {
-    var script = editor.getSession().getDocument().getValue();
+    var script = scriptService.script;
 
     var env = new $t.Env();
     env.put = function(s) {
       $scope.output += s;
     };
 
-    var input = $('#input').val();
+    var input = scriptService.input;
     var pos = 0;
     env.get = function() {
       if (pos < input.length) {
@@ -209,25 +167,15 @@ window.ScriptCtrl = function($scope, scriptService) {
     setTimeout(function() { $('#step').focus(); });
   };
 
-  function stopScript() {
+  $scope.stopDebugging = function() {
     $scope.exception = false;
     $scope.debugging = false;
     $scope.halted = false;
     $scope.stepper = null;
     $scope.command = null;
-    setTimeout(function() { editor.focus(); });
-  }
-
-  $scope.stopScript = function() {
-    stopScript();
   };
 
   $scope.hideError = function(elem) {
     $scope.error = null;
   };
-
-  setTimeout(function() {
-    editor.navigateFileEnd();
-    editor.focus();
-  });
 }
