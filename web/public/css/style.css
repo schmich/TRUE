@@ -17,13 +17,13 @@ a:hover {
   padding: 10px 10px;
 }
 h2 {
-  font: 22px 'Open Sans';
+  font: 20px 'Open Sans';
   color: #555;
 }
 .header h1 {
   margin: 0;
   padding: 0;
-  font: 22px 'Open Sans';
+  font: 20px 'Open Sans';
   color: #ccc;
   float: left;
 }
@@ -41,13 +41,13 @@ h2 {
   display: table;
   clear: both;
 }
-#edit-script, #input, #output, #stack, #vars, button {
+#edit-script, #input, #output, #stack, #vars, button.action {
   color: #333;
-  font: 26px Monaco, 'Ubuntu Mono', Consolas, monospace;
+  font: 24px Monaco, 'Ubuntu Mono', Consolas, monospace;
 }
 .program-halted, .program-exception {
   color: #353;
-  font: 22px 'Open Sans';
+  font: 20px 'Open Sans';
   background: #8e3;
   line-height: 40px;
   height: 100%;
@@ -64,7 +64,7 @@ h2 {
   padding: 0 15px 0 10px;
   cursor: pointer;
 }
-button {
+button.action {
   color: #fff;
   background: #59f;
   padding: 0px 20px;
@@ -72,15 +72,15 @@ button {
   border: 1px solid #59f;
   height: 40px;
   width: 120px;
-  font: 22px 'Open Sans';
+  font: 20px 'Open Sans';
   vertical-align: top;
   margin-right: 5px;
 }
-button:hover {
+button.action:hover {
   background: #26e;
   border: 1px solid #26e;
 }
-button:disabled {
+button.action:disabled {
   background: #ddd;
   border: 1px solid #ddd;
   color: #999;
@@ -119,6 +119,12 @@ button:disabled {
 .debugging .ace_content {
   background: #f3f3f3;
 }
+.ace_scrollbar {
+  overflow-y: auto !important;
+}
+.ace_gutter-cell {
+  color: #555 !important;
+}
 #editor #stack, #editor #vars {
   background: #fff;
   width: 200px;
@@ -139,13 +145,13 @@ button:disabled {
   border-left: 0;
 }
 #stack .title, #vars .title {
-  color: #666;
-  font: 20px 'Open Sans';
+  color: #555;
+  font: 18px 'Open Sans';
   background: #eee;
   padding: 4px 6px;
 }
 #stack ul, #vars ul {
-  font-size: 18px;
+  font-size: 16px;
   list-style-type: none;
   padding: 2px 5px;
   margin: 0;
@@ -159,7 +165,7 @@ button:disabled {
   color: #999;
 }
 #stack .empty, #vars .empty {
-  color: #bbb;
+  color: #aaa;
   padding: 15px 0;
   font: 16px 'Open Sans';
   text-align: center;
@@ -176,7 +182,7 @@ button:disabled {
   margin-top: 10px;
   background: #faa;
   padding: 7px 7px;
-  font: 24px 'Open Sans';
+  font: 22px 'Open Sans';
   color: #755;
 }
 .control {
@@ -217,6 +223,24 @@ button:disabled {
 #output.empty {
   font-family: 'Open Sans';
   color: #aaa;
+}
+.copy {
+  padding-top: 9px;
+  padding-right: 5px;
+  font-size: 15px;
+  float: right;
+}
+.copy a {
+  color: #888;
+}
+.copy a:hover, .copy a.zeroclipboard-is-hover {
+  color: #59f;
+}
+.copy i {
+  color: #444;
+}
+#copy-button {
+  margin-left: 5px;
 }
 /* "Hide" the placeholder text when the input is disabled. */
 :disabled::-webkit-input-placeholder {

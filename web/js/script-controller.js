@@ -1,4 +1,3 @@
-var base64 = require('urlsafe-base64');
 var ace = require('brace');
 var aceRange = ace.acequire('ace/range').Range;
 var parser = require('./parser').parser;
@@ -17,25 +16,12 @@ window.ScriptCtrl = function($scope, scriptService) {
   $scope.halted = false;
   $scope.command = null;
 
-  $scope.encodedScript = '';
-  $scope.encodedInput = '';
-
   var editor = ace.edit('edit-script');
   editor.setOption('highlightActiveLine', false);
 
   if (scriptService.script != null) {
     editor.getSession().getDocument().setValue(scriptService.script);
   }
-
-  $scope.$watch('scriptService.input', function(input) {
-    if (input != null)
-      $scope.encodedInput = base64.encode(new Buffer(input));
-  });
-
-  $scope.$watch('scriptService.script', function(script) {
-    if (script != null)
-      $scope.encodedScript = base64.encode(new Buffer(script));
-  });
 
   editor.getSession().getDocument().on('change', function(e) {
     $scope.$apply(function() {

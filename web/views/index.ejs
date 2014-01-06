@@ -4,7 +4,9 @@
   <title>TRUE: A FALSE Interpreter</title>
   <link rel="stylesheet" href="/css/normalize.css" />
   <link rel="stylesheet" href="/css/style.css" />
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+  <link href="//fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <script src="/js/lib/ZeroClipboard.min.js" type="text/javascript"></script>
   <script src="/js/bundle.js" type="text/javascript"></script>
 </head>
 <body ng-app="TRUE" ng-controller="ScriptCtrl">
@@ -41,14 +43,16 @@
     </div>
     <div class="control">
       <input id="input" type="text" ng-disabled="debugging" ng-model="scriptService.input" value="world" placeholder="Input" />
-      <button id="run" ng-if="!debugging" ng-click="runScript()">Run</button>
-      <button id="stop" ng-if="debugging" ng-click="stopScript()">Stop</button>
-      <button id="debug" ng-if="!debugging" ng-click="debugScript()">Debug</button>
-      <button id="step" ng-if="debugging" ng-disabled="exception || halted" ng-click="stepScript()">Step</button>
-      <button id="go" ng-if="debugging" ng-disabled="exception || halted" ng-click="resumeScript();">Go</button>
+      <button id="run" class="action" ng-if="!debugging" ng-click="runScript()">Run</button>
+      <button id="stop" class="action" ng-if="debugging" ng-click="stopScript()">Stop</button>
+      <button id="debug" class="action" ng-if="!debugging" ng-click="debugScript()">Debug</button>
+      <button id="step" class="action" ng-if="debugging" ng-disabled="exception || halted" ng-click="stepScript()">Step</button>
+      <button id="go" class="action" ng-if="debugging" ng-disabled="exception || halted" ng-click="resumeScript();">Go</button>
       <div class="program-halted" ng-show="halted">Complete</div>
       <div class="program-exception" ng-show="exception">Error</div>
-      <a ng-href="/?s={{encodedScript}}&i={{encodedInput}}">Permalink</a>
+      <div class="copy" ng-controller="ClipCtrl">
+        <a href="{{permalink}}"><i class="fa fa-link"></i></a><a id="copy-button">Copy script link</a>
+      </div>
     </div>
     <div ng-if="error != null" id="error-message"><span class="dismiss" ng-click="hideError()">&times;</span>{{error}}</div>
     <div id="output" ng-class="{ empty: !output }">{{output || 'Output'}}</div>
