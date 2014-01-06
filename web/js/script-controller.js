@@ -19,6 +19,14 @@ window.ScriptCtrl = function($scope, scriptService) {
   var editor = ace.edit('edit-script');
   editor.setOption('highlightActiveLine', false);
 
+  if (scriptService.script == null) {
+    scriptService.script = '"Hello, "[^$~][,]#"!"';
+  }
+
+  if (scriptService.input == null) {
+    scriptService.input = 'world';
+  }
+
   if (scriptService.script != null) {
     editor.getSession().getDocument().setValue(scriptService.script);
   }

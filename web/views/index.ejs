@@ -24,7 +24,7 @@
   <form>
     <div id="editor">
       <div class="script-container" ng-class="{ debugging: debugging, exception: exception, halted: halted }">
-        <div id="edit-script">"Hello, "[^$~][,]#"!"</div>
+        <div id="edit-script"></div>
       </div>
       <div id="stack">
         <div class="title">Stack</div>
@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="control">
-      <input id="input" type="text" ng-disabled="debugging" ng-model="scriptService.input" value="world" placeholder="Input" />
+      <input id="input" type="text" ng-disabled="debugging" ng-model="scriptService.input" placeholder="Input" />
       <button id="run" class="action" ng-if="!debugging" ng-click="runScript()">Run</button>
       <button id="stop" class="action" ng-if="debugging" ng-click="stopScript()">Stop</button>
       <button id="debug" class="action" ng-if="!debugging" ng-click="debugScript()">Debug</button>
