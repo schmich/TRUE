@@ -13,8 +13,8 @@ window.ClipCtrl = function($scope, scriptService) {
     var input = values[0];
     var script = values[1];
 
-    var encodedInput = base64.encode(new Buffer(input));
-    var encodedScript = base64.encode(new Buffer(script));
+    var encodedInput = (input == null) ? '' : base64.encode(new Buffer(input));
+    var encodedScript = (script == null) ? '' : base64.encode(new Buffer(script));
 
     $scope.permalink =
       window.location.origin +
