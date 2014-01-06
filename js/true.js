@@ -48,6 +48,10 @@ var exp = {
     return new exp.RuntimeError('Referenced variable is not defined (name: ' + name + ').');
   },
 
+  BreakError: function(command) {
+    this.command = command;
+  },
+
   Env: function() {
     var self = this;
     this.stack = [];
@@ -97,6 +101,10 @@ var exp = {
             var cmd = env.commands.shift();
             if (cmd !== undefined)
               cmd.step(env);
+
+            if (this.next() instanceof exp.Break)
+              throw new exp.BreakError(this.next());
+
           } while (this.next() && this.next().pass);
 
           return cmd;
@@ -114,7 +122,7 @@ var exp = {
   },
 
   BinaryOp: function(str, op) {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       ensureStack(env, 2);
 
       var r = env.stack.pop();
@@ -122,22 +130,18 @@ var exp = {
       env.stack.push(op(l, r));
     };
 
-    this.step = this.exec;
-
     this.toString = function() {
       return str;
     };
   },
 
   UnaryOp: function(str, op) {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       ensureStack(env, 1);
 
       var s = env.stack.pop();
       env.stack.push(op(s)); 
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return str;
@@ -145,27 +149,23 @@ var exp = {
   },
 
   PushInt: function(value) {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       env.stack.push(value);
     };
 
     this.toString = function() {
       return value + '';
     };
-
-    this.step = this.exec;
   },
 
   PushChar: function(value) {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       env.stack.push(value.charCodeAt(0));
     };
 
     this.toString = function() {
       return "'" + value;
     };
-
-    this.step = this.exec;
   },
 
   Add: function() {
@@ -260,14 +260,12 @@ var exp = {
   },
 
   Duplicate: function() {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       ensureStack(env, 1);
 
       var x = env.stack[env.stack.length - 1];
       env.stack.push(x);
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return '$';
@@ -275,13 +273,11 @@ var exp = {
   },
 
   Delete: function() {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       ensureStack(env, 1);
 
       env.stack.pop();
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return '%';
@@ -289,7 +285,7 @@ var exp = {
   },
 
   Swap: function() {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       ensureStack(env, 2);
 
       var first = env.stack.pop();
@@ -298,23 +294,19 @@ var exp = {
       env.stack.push(second);
     };
 
-    this.step = this.exec;
-
     this.toString = function() {
       return '\\';
     };
   },
 
   Rotate: function() {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       ensureStack(env, 3);
 
       var item = env.stack[env.stack.length - 3];
       env.stack.splice(env.stack.length - 3, 1);
       env.stack.push(item);
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return '@';
@@ -324,13 +316,11 @@ var exp = {
   Block: function(commands) {
     this.commands = commands;
 
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       for (var i = 0; i < commands.length; ++i) {
         commands[i].exec(env);
       } 
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       var s = '';
@@ -347,7 +337,7 @@ var exp = {
   },
 
   Pick: function() {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       var index = env.stack.popInt();
       if (index < 0)
         throw new exp.RuntimeError('ø must specify non-negative index (' + index + ' given).');
@@ -358,20 +348,16 @@ var exp = {
       env.stack.push(item);
     };
 
-    this.step = this.exec;
-
     this.toString = function() {
       return 'ø';
     };
   },
 
   PutInt: function() {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       var x = env.stack.popInt();
       env.put(String(x));
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return '.';
@@ -379,12 +365,10 @@ var exp = {
   },
 
   PutChar: function() {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       var code = env.stack.popInt();
       env.put(String.fromCharCode(code));
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return ',';
@@ -393,11 +377,9 @@ var exp = {
 
   // TODO: Support escaped quotes.
   PutString: function(string) {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       env.put(string);
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return '"' + string + '"';
@@ -405,11 +387,9 @@ var exp = {
   },
 
   GetChar: function() {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       env.stack.push(env.get());
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return '^';
@@ -417,14 +397,12 @@ var exp = {
   },
 
   AssignVar: function(name) {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       ensureStack(env, 1);
 
       var x = env.stack.pop();
       env.vars[name] = x;
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return name + ':';
@@ -432,7 +410,7 @@ var exp = {
   },
 
   ReadVar: function(name) {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       var x = env.vars[name];
       if (x === undefined)
         throw new exp.ReferenceError(name);
@@ -440,19 +418,15 @@ var exp = {
       env.stack.push(x); 
     };
 
-    this.step = this.exec;
-
     this.toString = function() {
       return name + ';';
     };
   },
 
   PushSubroutine: function(block) {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       env.stack.push(block);
     };
-
-    this.step = this.exec;
 
     this.toString = function() {
       return block.toString();
@@ -570,7 +544,7 @@ var exp = {
   },
 
   Random: function() {
-    this.exec = function(env) {
+    this.step = this.exec = function(env) {
       var hi = env.stack.popInt();
       var lo = env.stack.popInt();
 
@@ -578,16 +552,22 @@ var exp = {
       env.stack.push(rand);
     };
 
-    this.step = this.exec;
-
     this.toString = function() {
       return '∆';
     };
   },
 
+  Break: function() {
+    this.step = this.exec = function(env) { };
+
+    this.toString = function() {
+      return '`';
+    };
+  },
+
   Flush: function() {
-    this.exec = function(env) { };
-    this.step = this.exec;
+    this.step = this.exec = function(env) { };
+
     this.toString = function() {
       return 'ß';
     };

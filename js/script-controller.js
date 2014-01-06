@@ -111,18 +111,30 @@ window.ScriptCtrl = function($scope, scriptService) {
   };
 
   $scope.resumeScript = function() {
+    var isBreak = false;
+
     var run = function() {
       do {
-        var cmd = $scope.stepper.step();
-        if (cmd)
-          $scope.command = cmd;
+        try {
+          var cmd = $scope.stepper.step();
+          if (cmd)
+            $scope.command = cmd;
+        } catch(e) {
+          if (e instanceof $t.BreakError) {
+            $scope.command = e.command;
+            isBreak = true;
+            return;
+          } else {
+            throw e;
+          }
+        }
       } while (cmd);
     };
 
     if (!tryRun(run)) {
       $scope.command = $scope.stepper.next();
       $scope.exception = true;
-    } else {
+    } else if (!isBreak) {
       $scope.halted = true;
     }
   }
@@ -132,7 +144,13 @@ window.ScriptCtrl = function($scope, scriptService) {
       return;
 
     var run = function() {
-      $scope.command = $scope.stepper.step();
+      try {
+        $scope.command = $scope.stepper.step();
+      } catch(e) {
+        if (!(e instanceof $t.BreakError)) {
+          throw e;
+        }
+      }
     };
 
     if (!tryRun(run)) {

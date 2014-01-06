@@ -99,6 +99,7 @@ command
   | varAssign
   | varRead
   | random
+  | break
   ;
 
 pushInt: INT_LITERAL
@@ -187,5 +188,8 @@ varRead: VAR ';'
 
 random: '∆'
   { $$ = yy.annotate(new yy.Random(), @$); };
+
+break: '`'
+  { $$ = yy.annotate(new yy.Break(), @$); };
 
 %%

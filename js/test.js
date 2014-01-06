@@ -104,11 +104,11 @@ var tests = [
   [['^', 'a'], [97]],
   [['^^,,', 'ab'], [], 'ba'],
   [['^', ''], [-1]],
+  ['`', []],
   // varAssign
   // varRead
   // pushSubroutine
   // random
-  // assembly
   // More tests around ops that don't care about type (e.g. []$, []%, var assign, ...).
   ['[1 2]!', [1, 2]],
   ['1_[4]?', [4]],
