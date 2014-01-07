@@ -34,6 +34,7 @@ function trueType(x) {
 var exp = {
   RuntimeError: function(message) {
     this.message = message;
+    this.command = null;
   },
 
   StackError: function(required, actual) {
@@ -97,17 +98,29 @@ var exp = {
 
       return {
         step: function() {
-          do {
-            var cmd = env.commands.shift();
-            if (cmd !== undefined)
+          if (env.commands.length == 0)
+            return null;
+
+          var cmd = null;
+          var next = null;
+          try {
+            do {
+              cmd = env.commands.shift();
               cmd.step(env);
 
-            if (this.next() instanceof exp.Break)
-              throw new exp.BreakError(this.next());
+              next = this.next();
+              if (next instanceof exp.Break)
+                throw new exp.BreakError(next);
 
-          } while (this.next() && this.next().pass);
+            } while (next && next.pass);
 
-          return cmd;
+            return cmd;
+          } catch (e) {
+            if (!e.command)
+              e.command = cmd;
+
+            throw e;
+          }
         },
 
         next: function() {

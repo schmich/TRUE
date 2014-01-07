@@ -60,24 +60,24 @@ window.ScriptCtrl = function($scope, scriptService) {
     $scope.error = null;
 
     var program = null;
-    var valid = tryRun(function() {
+    var exception = tryRun(function() {
       program = parser.parse(script);
     });
 
-    return [valid, program, env];
+    return [(exception == null), program, env];
   }
 
   function tryRun(runner) {
-    var error = false;
+    var exception = null;
 
     try {
       runner();
     } catch(e) {
-      error = true;
+      exception = e;
       $scope.error = e.message;
     }
 
-    return !error;
+    return exception;
   }
 
   $scope.runScript = function() {
@@ -89,11 +89,11 @@ window.ScriptCtrl = function($scope, scriptService) {
     if (!valid)
       return;
 
-    var success = tryRun(function() {
+    var exception = tryRun(function() {
       program.exec(env);
     });
 
-    if (!success) {
+    if (exception) {
       $scope.exception = true;
     } else {
       $scope.halted = true;
@@ -119,7 +119,7 @@ window.ScriptCtrl = function($scope, scriptService) {
           var cmd = $scope.stepper.step();
           if (cmd)
             $scope.command = cmd;
-        } catch(e) {
+        } catch (e) {
           if (e instanceof $t.BreakError) {
             $scope.command = e.command;
             isBreak = true;
@@ -131,8 +131,9 @@ window.ScriptCtrl = function($scope, scriptService) {
       } while (cmd);
     };
 
-    if (!tryRun(run)) {
-      $scope.command = $scope.stepper.next();
+    var exception = tryRun(run);
+    if (exception) {
+      $scope.command = exception.command;
       $scope.exception = true;
     } else if (!isBreak) {
       $scope.halted = true;
@@ -146,14 +147,15 @@ window.ScriptCtrl = function($scope, scriptService) {
     var run = function() {
       try {
         $scope.command = $scope.stepper.step();
-      } catch(e) {
+      } catch (e) {
         if (!(e instanceof $t.BreakError)) {
           throw e;
         }
       }
     };
 
-    if (!tryRun(run)) {
+    var exception = tryRun(run);
+    if (exception) {
       $scope.exception = true;
       return;
     }
@@ -188,6 +190,7 @@ window.ScriptCtrl = function($scope, scriptService) {
     $scope.exception = false;
     $scope.debugging = false;
     $scope.halted = false;
+    $scope.error = null;
     $scope.stepper = null;
     $scope.command = null;
   };
