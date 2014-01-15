@@ -65,8 +65,15 @@ module.exports = [
     description: 'Reads all input onto the stack, terminated with a zero.'
   },
   {
+    name: 'Palindrome',
+    script: '[0[^$~][]#%]r:\n[1[$ø0=~][1+]#1-]l:\n[1_a:l;!1-b:0t:\n [b;t;>][b;øt;1+ø=a;&a:b;1-b:t;1+t:]#\na;]p:\nr;!p;!$["yes"]?~["no"]?',
+    input: 'amanaplanacanalpanama',
+    description: 'Determines whether the input text is a palindrome or not. Makes heavy use of variables.'
+  },
+  {
     name: 'Star square',
     script: "[1+$[1-$]['*,]#%%]b: { draws top/bottom border }\n[$$1=$[\"*\"%%]?~[ { handle corner case of size 1 }\n b;! { draw top border }\n $$1-[1-$] { for each open row }\n  [\\10,'*,$1-[1-$][' ,]#%\\'*,] { print open row }\n  #%%10, { print trailing newline }\n b;! { draw bottom border }\n]?]d:\n7d;!",
     description: 'Draws a 7x7 ASCII square made of stars.'
   }
 ];
+
