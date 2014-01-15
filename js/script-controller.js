@@ -1,7 +1,8 @@
+var app = require('./app');
 var parser = require('./parser').parser;
 var $t = parser.yy = require('./true');
 
-window.ScriptCtrl = function($scope, scriptService) {
+app.controller('ScriptCtrl', function($scope, scriptService) {
   $scope.scriptService = scriptService;
 
   $scope.output = '';
@@ -198,4 +199,4 @@ window.ScriptCtrl = function($scope, scriptService) {
   $scope.hideError = function(elem) {
     $scope.error = null;
   };
-}
+});

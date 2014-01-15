@@ -1,6 +1,7 @@
+var app = require('./app');
 var base64 = require('urlsafe-base64');
 
-window.ExamplesCtrl = function($scope, $http) {
+app.controller('ExamplesCtrl', function($scope, $http) {
   $scope.examples = [
     {
       name: 'Hello, world!',
@@ -83,4 +84,4 @@ window.ExamplesCtrl = function($scope, $http) {
          + "/?s=" + encodedScript
          + "&i=" + encodedInput;
   };
-}
+});

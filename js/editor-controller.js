@@ -1,7 +1,8 @@
+var app = require('./app');
 var ace = require('brace');
 var aceRange = ace.acequire('ace/range').Range;
 
-window.EditCtrl = function($scope, scriptService) {
+app.controller('EditCtrl', function($scope, scriptService) {
   $scope.scriptService = scriptService;
 
   var editor = ace.edit('edit-script');
@@ -50,4 +51,4 @@ window.EditCtrl = function($scope, scriptService) {
     editor.navigateFileEnd();
     editor.focus();
   });
-}
+});
