@@ -8,7 +8,7 @@ module.exports = [
   {
     name: 'Factorial',
     script: '[$1=$[\\%1\\]?~[$1-f;!*]?]f:\n10f;!.',
-    description: 'Prints 10!'
+    description: 'Computes n!'
   },
   {
     name: 'Even/odd',
@@ -46,6 +46,11 @@ module.exports = [
     name: 'ABCs',
     script: '27 [1-$][$91\\-,]#',
     description: 'Prints the alphabet A-Z.'
+  },
+  {
+    name: 'pow',
+    script: '[\\$@[1-$0=~][@@\\$@*@]#\\]p:\n2 10p;!.',
+    description: 'Computes x^y.'
   },
   {
     name: 'Simple add',
