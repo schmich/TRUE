@@ -5,26 +5,25 @@
   box-sizing: border-box;
 }
 a, a:visited {
-  font-family: 'Open Sans';
+  font-family: 'Helvetica Neue';
   text-decoration: none;
-  color: #ccc;
+  color: #333;
 }
 a:hover {
-  color: #59f;
+  color: #d33;
 }
 .header {
-  background: #55555c;
-  padding: 10px 10px;
+  padding: 15px 10px 5px 10px;
 }
 h2 {
-  font: 20px 'Open Sans';
+  font: 20px 'Helvetica Neue';
   color: #555;
 }
 .header h1 {
   margin: 0;
   padding: 0;
-  font: 20px 'Open Sans';
-  color: #ccc;
+  font: 20px 'Helvetica Neue';
+  color: #d33;
   float: left;
 }
 .header nav {
@@ -34,7 +33,7 @@ h2 {
   margin-right: 10px;
 }
 .header nav a {
-  margin-left: 15px;
+  margin-left: 20px;
 }
 .group:after {
   content: "";
@@ -47,7 +46,7 @@ h2 {
 }
 .program-halted, .program-exception {
   color: #353;
-  font: 20px 'Open Sans';
+  font: 20px 'Helvetica Neue';
   background: #8e3;
   line-height: 40px;
   height: 100%;
@@ -72,7 +71,7 @@ button.action {
   border: 1px solid #59f;
   height: 40px;
   width: 120px;
-  font: 20px 'Open Sans';
+  font: 20px 'Helvetica Neue';
   vertical-align: top;
   margin-right: 5px;
 }
@@ -116,14 +115,24 @@ button.action:disabled {
 #editor {
   position: relative;
 }
-.debugging .ace_content {
-  background: #f3f3f3;
-}
 .ace_scrollbar {
   overflow-y: auto !important;
 }
 .ace_gutter-cell {
-  color: #555 !important;
+  color: #333;
+}
+.ace_gutter {
+  background: #fff !important;
+  border-right: 1px solid #ccc;
+}
+.ace-tm .ace_gutter-active-line {
+  background: #eee !important;
+}
+.debugging .ace_content {
+  background: #f3f3f3;
+}
+.debugging .ace_gutter {
+  background: #f3f3f3 !important;
 }
 #editor #stack, #editor #vars {
   background: #fff;
@@ -146,9 +155,10 @@ button.action:disabled {
 }
 #stack .title, #vars .title {
   color: #555;
-  font: 18px 'Open Sans';
-  background: #eee;
-  padding: 4px 6px;
+  font: 18px 'Helvetica Neue';
+  padding: 8px 0;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
 }
 #stack ul, #vars ul {
   font-size: 16px;
@@ -167,7 +177,7 @@ button.action:disabled {
 #stack .empty, #vars .empty {
   color: #aaa;
   padding: 15px 0;
-  font: 16px 'Open Sans';
+  font: 16px 'Helvetica Neue';
   text-align: center;
 }
 #output {
@@ -182,7 +192,7 @@ button.action:disabled {
   margin-top: 10px;
   background: #faa;
   padding: 7px 7px;
-  font: 22px 'Open Sans';
+  font: 22px 'Helvetica Neue';
   color: #755;
 }
 .control {
@@ -205,23 +215,23 @@ button.action:disabled {
   outline: 1px solid #ee0;
 }
 ::-webkit-input-placeholder {
-  font-family: 'Open Sans';
+  font-family: 'Helvetica Neue';
   color: #aaa;
 }
 :-moz-placeholder {
-  font-family: 'Open Sans';
+  font-family: 'Helvetica Neue';
   color: #aaa;
 }
 ::-moz-placeholder {
-  font-family: 'Open Sans';
+  font-family: 'Helvetica Neue';
   color: #aaa;
 }
 :-ms-input-placeholder {
-  font-family: 'Open Sans';
+  font-family: 'Helvetica Neue';
   color: #aaa;
 }
 #output.empty {
-  font-family: 'Open Sans';
+  font-family: 'Helvetica Neue';
   color: #aaa;
 }
 .copy {
@@ -231,16 +241,58 @@ button.action:disabled {
   float: right;
 }
 .copy a {
-  color: #888;
+  color: #333;
 }
 .copy a:hover, .copy a.zeroclipboard-is-hover {
-  color: #59f;
+  color: #d33;
 }
 .copy i {
   color: #666;
 }
 #copy-button {
   margin-left: 5px;
+}
+.examples {
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-bottom: 70px;
+}
+.examples h2 {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.example {
+  width: 50%;
+  display: inline-block;
+  padding: 0 40px;
+  margin-bottom: 40px;
+  vertical-align: top;
+}
+.example .name a {
+  float: right;
+}
+.example .clear {
+  clear: both;
+  border-top: 1px solid #ddd;
+}
+.example h3 {
+  float: left;
+  font-family: 'Helvetica Neue';
+  font-weight: normal;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 5px;
+}
+.example .code {
+  white-space: pre-wrap;
+  padding-top: 15px;
+  font: 16px Monaco, 'Ubuntu Mono', Consolas, monospace;
+}
+.example .description {
+  padding-top: 15px;
+}
+.example .load {
+  color: #d33;
 }
 /* "Hide" the placeholder text when the input is disabled. */
 :disabled::-webkit-input-placeholder {

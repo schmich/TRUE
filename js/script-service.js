@@ -12,18 +12,34 @@ app.factory('scriptService', function($rootScope, $location) {
   };
 
   var restoreState = function() {
-    var script = $location.search().s;
-    var input = $location.search().i;
+    var script = null;
+    var input = null;
+    var query = window.location.search;
+    if (query.length > 1) {
+      var parts = query.substring(1).split('&');
+      var vars = {};
+      for (var i = 0; i < parts.length; ++i) {
+        var eq = parts[i].split('=');
+        vars[eq[0]] = eq[1];
+      }
+
+      script = vars.s;
+      input = vars.i;
+    }
 
     var stored = angular.fromJson(localStorage.scriptService);
   
-    if (script) {
+    if (script == '') {
+      service.script = '';
+    } else if (script != null) {
       service.script = base64.decode(script).toString();
     } else if (stored) {
       service.script = stored.script;
     }
 
-    if (input) {
+    if (input == '') {
+      service.input = '';
+    } else if (input != null) {
       service.input = base64.decode(input).toString();
     } else if (stored) {
       service.input = stored.input;
