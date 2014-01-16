@@ -5,7 +5,7 @@
   box-sizing: border-box;
 }
 a, a:visited {
-  font-family: 'Helvetica Neue';
+  font-family: 'Open Sans';
   text-decoration: none;
   color: #333;
 }
@@ -13,16 +13,16 @@ a:hover {
   color: #d33;
 }
 .header {
-  padding: 15px 10px 5px 10px;
+  padding: 15px 15px 5px 15px;
 }
 h2 {
-  font: 20px 'Helvetica Neue';
+  font: 20px 'Open Sans';
   color: #555;
 }
 .header h1 {
   margin: 0;
   padding: 0;
-  font: 20px 'Helvetica Neue';
+  font: 20px 'Open Sans';
   color: #d33;
   float: left;
 }
@@ -45,7 +45,7 @@ h2 {
 }
 .program-halted, .program-exception {
   color: #353;
-  font: 20px 'Helvetica Neue';
+  font: 20px 'Open Sans';
   background: #8e3;
   line-height: 40px;
   height: 100%;
@@ -70,7 +70,7 @@ button.action {
   border: 1px solid #59f;
   height: 40px;
   width: 120px;
-  font: 20px 'Helvetica Neue';
+  font: 20px 'Open Sans';
   vertical-align: top;
   margin-right: 5px;
 }
@@ -154,7 +154,7 @@ button.action:disabled {
 }
 #stack .title, #vars .title {
   color: #555;
-  font: 18px 'Helvetica Neue';
+  font: 18px 'Open Sans';
   padding: 8px 0;
   text-align: center;
   border-bottom: 1px solid #ddd;
@@ -176,7 +176,7 @@ button.action:disabled {
 #stack .empty, #vars .empty {
   color: #aaa;
   padding: 15px 0;
-  font: 16px 'Helvetica Neue';
+  font: 16px 'Open Sans';
   text-align: center;
 }
 #output {
@@ -191,7 +191,7 @@ button.action:disabled {
   margin-top: 10px;
   background: #faa;
   padding: 7px 7px;
-  font: 22px 'Helvetica Neue';
+  font: 22px 'Open Sans';
   color: #755;
 }
 .control {
@@ -214,23 +214,23 @@ button.action:disabled {
   outline: 1px solid #ee0;
 }
 ::-webkit-input-placeholder {
-  font-family: 'Helvetica Neue';
+  font-family: 'Open Sans';
   color: #aaa;
 }
 :-moz-placeholder {
-  font-family: 'Helvetica Neue';
+  font-family: 'Open Sans';
   color: #aaa;
 }
 ::-moz-placeholder {
-  font-family: 'Helvetica Neue';
+  font-family: 'Open Sans';
   color: #aaa;
 }
 :-ms-input-placeholder {
-  font-family: 'Helvetica Neue';
+  font-family: 'Open Sans';
   color: #aaa;
 }
 #output.empty {
-  font-family: 'Helvetica Neue';
+  font-family: 'Open Sans';
   color: #aaa;
 }
 .copy {
@@ -276,7 +276,7 @@ button.action:disabled {
 }
 .example h3 {
   float: left;
-  font-family: 'Helvetica Neue';
+  font-family: 'Open Sans';
   font-weight: normal;
   padding: 0;
   margin: 0;
