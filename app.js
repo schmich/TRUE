@@ -101,6 +101,10 @@ app.get('/examples', function(req, res) {
   res.render('examples');
 });
 
+app.get('/reference', function(req, res) {
+  res.render('reference');
+});
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
