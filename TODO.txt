@@ -1,0 +1,3 @@
+- Slide-up language reference
+- Check for infinite loops and kill script
+- Save script (localStorage) before running/debugging script (just after button click)

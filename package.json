@@ -10,6 +10,7 @@
     "ejs": "*",
     "browserify": "~3.19.0",
     "jison": "~0.4.13",
+    "jisonify": "1.x.x",
     "concat-stream": "~1.4.0"
   },
   "engines": {
